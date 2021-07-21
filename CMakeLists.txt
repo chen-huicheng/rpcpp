@@ -3,7 +3,7 @@ PROJECT(rpcpp)
 
 set(project_name rpcpp)
 set(project_root ${PROJECT_SOURCE_DIR})
-set(project_src ${project_root}/src)
+set(project_src ${project_root}/rpcpp)
 set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR})
 
 set(CMAKE_CXX_STANDARD 11)  #设置使用c11标准编译程序
@@ -17,7 +17,7 @@ find_package(jsoncpp CONFIG REQUIRED)
 
 include_directories(
     /usr/include/
-    ${project_include}
+    ${project_src}/
 )
 
 link_directories(
@@ -26,11 +26,12 @@ link_directories(
 
 aux_source_directory(${project_src}/ src)
 
-add_executable(${project_name} ${src})
+# add_executable(${project_name} ${src})
 
-target_link_libraries(
-    ${project_name}
-    -ljsoncpp
-    -lpthread
-)
+# target_link_libraries(
+#     ${project_name}
+#     -ljsoncpp
+#     -lpthread
+# )
+# add_subdirectory(rpcpp)
 # target_link_libraries(main PRIVATE jsoncpp_object jsoncpp_static)

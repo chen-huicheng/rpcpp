@@ -1,0 +1,33 @@
+
+#ifndef RPCPP_CLIENT_CLIENT_H_
+#define RPCPP_CLIENT_CLIENT_H_
+
+#include <jsoncpp/json/json.h>
+#include "rpcpp/client/iclientconnector.h"
+#include "rpcpp/common/noncopyable.h"
+#include <vector>
+#include <memory>
+#include <map>
+
+namespace rpcpp
+{
+    class RpcProtocolClient;
+
+    class Client//:public noncopyable
+    {
+    public:
+        Client(IClientConnector &connector);
+        virtual ~Client();
+
+        void CallMethod(const std::string &name, const Json::Value &parameter, Json::Value &result);
+        Json::Value CallMethod(const std::string &name, const Json::Value &parameter);
+
+        void CallNotification(const std::string &name, const Json::Value &parameter);
+
+    private:
+        std::shared_ptr<IClientConnector> connector;
+        std::shared_ptr<RpcProtocolClient> protocol;
+    };
+
+}
+#endif /* RPCPP_CLIENT_CLIENT_H_ */

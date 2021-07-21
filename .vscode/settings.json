@@ -42,8 +42,21 @@
         "streambuf": "cpp",
         "typeinfo": "cpp",
         "functional": "cpp",
-        "iterator": "cpp"
-    }
+        "iterator": "cpp",
+        "cstring": "cpp",
+        "ctime": "cpp",
+        "chrono": "cpp",
+        "condition_variable": "cpp",
+        "unordered_set": "cpp",
+        "map": "cpp",
+        "ratio": "cpp",
+        "future": "cpp",
+        "iomanip": "cpp",
+        "mutex": "cpp",
+        "thread": "cpp",
+        "cinttypes": "cpp"
+    },
+    "C_Cpp.errorSquiggles": "Enabled"
 }
 
 //// python 

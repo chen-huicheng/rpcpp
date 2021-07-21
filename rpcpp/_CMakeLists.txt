@@ -1,0 +1,30 @@
+# add_library(rpcpp STATIC
+#         common/
+#         server/
+#         client/)
+# find_package(jsoncpp CONFIG REQUIRED)
+# include_directories(
+#     /usr/include/
+#     ${project_include}
+# )
+
+# link_directories(
+#     /usr/lib/aarch64-linux-gnu/
+# )
+# target_link_libraries(
+#     rpcpp
+#     -ljsoncpp
+#     -lpthread
+# )
+# install(TARGETS rpcpp DESTINATION lib)
+
+# set(HEADERS
+#         util.h
+#         server/RpcServer.h
+#         server/BaseServer.h
+#         server/Procedure.h
+#         server/RpcService.h
+#         client/BaseClient.h)
+# install(FILES ${HEADERS} DESTINATION include)
+
+# add_subdirectory(stub)
