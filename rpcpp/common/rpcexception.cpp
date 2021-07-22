@@ -1,38 +1,34 @@
 
 
-#include "rpcpp/common/exception.h"
+#include "rpcpp/common/rpcexception.h"
 
 using namespace rpcpp;
 
-RpcException::RpcException(int code)
-    : code(code), message(Errors::GetErrorMessage(code))
+RpcException::RpcException(int code) : code(code), message(Errors::GetErrorMessage(code))
 {
-    this->setWhatMessage();
+    setWhatMessage();
 }
 
-RpcException::RpcException(int code, const std::string &message)
-    : code(code), message(Errors::GetErrorMessage(code))
+RpcException::RpcException(int code, const std::string &message) : code(code), message(Errors::GetErrorMessage(code))
 {
     if (!this->message.empty())
         this->message = this->message + ": ";
     this->message = this->message + message;
-    this->setWhatMessage();
+    setWhatMessage();
 }
 
-RpcException::RpcException(int code, const std::string &message,
-                           const Json::Value &data)
+RpcException::RpcException(int code, const std::string &message, const Json::Value &data)
     : code(code), message(Errors::GetErrorMessage(code)), data(data)
 {
     if (!this->message.empty())
         this->message = this->message + ": ";
     this->message = this->message + message;
-    this->setWhatMessage();
+    setWhatMessage();
 }
 
-RpcException::RpcException(const std::string &message)
-    : code(0), message(message)
+RpcException::RpcException(const std::string &message) : code(0), message(message)
 {
-    this->setWhatMessage();
+    setWhatMessage();
 }
 
 RpcException::~RpcException() throw() {}
@@ -45,21 +41,21 @@ const Json::Value &RpcException::GetData() const { return data; }
 
 const char *RpcException::what() const throw()
 {
-    return this->whatString.c_str();
+    return whatString.c_str();
 }
 
 void RpcException::setWhatMessage()
 {
-    if (this->code != 0)
+    if (code != 0)
     {
         std::stringstream ss;
-        ss << "Exception " << this->code << " : " << this->message;
+        ss << "Exception " << code << " : " << message;
         if (data != Json::nullValue)
             ss << ", data: " << data.toStyledString();
-        this->whatString = ss.str();
+        whatString = ss.str();
     }
     else
     {
-        this->whatString = this->message;
+        whatString = message;
     }
 }

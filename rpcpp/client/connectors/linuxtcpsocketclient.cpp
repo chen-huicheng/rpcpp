@@ -10,45 +10,32 @@
 #include <string.h>
 #include <sys/socket.h>
 #include <unistd.h>
-#include "linuxtcpsocketclient.h"
-#include "rpcpp/common/streamreader.h"
-#include "rpcpp/common/streamwriter.h"
+#include "rpcpp/client/connectors/linuxtcpsocketclient.h"
 
 using namespace rpcpp;
 
-LinuxTcpSocketClient::LinuxTcpSocketClient(const std::string &hostToConnect,
-                                           const unsigned int &port)
-    : hostToConnect(hostToConnect), port(port) {}
+LinuxTcpSocketClient::LinuxTcpSocketClient(const std::string &hostToConnect, const unsigned int &port) : hostToConnect(hostToConnect), port(port) {}
 
 LinuxTcpSocketClient::~LinuxTcpSocketClient() {}
 
-void LinuxTcpSocketClient::SendRPCMessage(const std::string &message,
-                                          std::string &result)
+void LinuxTcpSocketClient::SendRPCMessage(const std::string &message, std::string &result)
 {
-    int socket_fd = this->Connect();
-
-    StreamWriter writer;
-    std::string toSend = message;
-    if (!writer.Write(toSend, socket_fd))
-    {
-        throw RpcException(Errors::ERROR_CLIENT_CONNECTOR,
-                           "Could not write request");
-    }
-
-    StreamReader reader(DEFAULT_BUFFER_SIZE);
-    if (!reader.Read(result, socket_fd, result.size()))
-    {
-        throw RpcException(Errors::ERROR_CLIENT_CONNECTOR,
-                           "Could not read response");
-    }
+    int socket_fd = Connect();
+    msg.SendMessage(socket_fd, message);
+    msg.ReadMessage(socket_fd, result);
     close(socket_fd);
 }
-
+void LinuxTcpSocketClient::SendRPCMessage(const std::string &message)
+{
+    int socket_fd = Connect();
+    msg.SendMessage(socket_fd, message);
+    close(socket_fd);
+}
 int LinuxTcpSocketClient::Connect()
 {
-    if (this->IsIpv4Address(this->hostToConnect))
+    if (IsIpv4Address(hostToConnect))
     {
-        return this->Connect(this->hostToConnect, this->port);
+        return Connect(hostToConnect, port);
     }
     else
     {

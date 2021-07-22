@@ -5,7 +5,7 @@
 #include <unistd.h>
 #include <vector>
 #include "rpcpp/common/noncopyable.h"
-
+#include "rpcpp/common/rpcexception.h"
 namespace rpcpp
 {
     class Poller : public noncopyable

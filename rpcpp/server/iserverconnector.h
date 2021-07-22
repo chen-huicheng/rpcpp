@@ -7,11 +7,11 @@
 namespace rpcpp
 {
 
-    class AbstractServerConnector
+    class IServerConnector
     {
     public:
-        AbstractServerConnector();
-        virtual ~AbstractServerConnector();
+        IServerConnector();
+        virtual ~IServerConnector();
 
         virtual bool StartListening() = 0;
         virtual bool StopListening() = 0;

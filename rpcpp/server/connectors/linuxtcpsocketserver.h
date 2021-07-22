@@ -12,15 +12,15 @@
 #include <sys/time.h>
 #include <sys/types.h>
 #include <unistd.h>
-#include "rpcpp/server/abstractserverconnector.h"
+#include "rpcpp/server/iserverconnector.h"
 #include "rpcpp/common/streamreader.h"
 #include "rpcpp/common/streamwriter.h"
-
+#include "rpcpp/common/message.h"
 
 namespace rpcpp
 {
 
-    class LinuxTcpSocketServer : public AbstractServerConnector
+    class LinuxTcpSocketServer : public IServerConnector
     {
     public:
         LinuxTcpSocketServer(const std::string &ip, const unsigned int &port);
@@ -33,8 +33,7 @@ namespace rpcpp
         int listenfd;
         bool stop;
         struct sockaddr_in address;
-        StreamReader reader;
-        StreamWriter writer;
+        Message msg;
         bool InitializeListener();
         void run();
         static void* eventloop(void *arg);

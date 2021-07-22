@@ -23,7 +23,7 @@ WindowsTcpSocketClient::~WindowsTcpSocketClient() {}
 void WindowsTcpSocketClient::SendRPCMessage(
     const std::string &message, std::string &result) throw(JsonRpcException)
 {
-    SOCKET socket_fd = this->Connect();
+    SOCKET socket_fd = Connect();
     char buffer[BUFFER_SIZE];
     bool fullyWritten = false;
     string toSend = message;
@@ -85,9 +85,9 @@ string WindowsTcpSocketClient::GetErrorMessage(const int &e)
 
 SOCKET WindowsTcpSocketClient::Connect() throw(JsonRpcException)
 {
-    if (this->IsIpv4Address(this->hostToConnect))
+    if (IsIpv4Address(hostToConnect))
     {
-        return this->Connect(this->hostToConnect, this->port);
+        return Connect(hostToConnect, port);
     }
     else // We were given a hostname
     {
@@ -98,9 +98,9 @@ SOCKET WindowsTcpSocketClient::Connect() throw(JsonRpcException)
         hints.ai_socktype = SOCK_STREAM;
         hints.ai_protocol = IPPROTO_TCP;
         char port[6];
-        itoa(this->port, port, 10);
+        itoa(port, port, 10);
         DWORD retval =
-            getaddrinfo(this->hostToConnect.c_str(), port, &hints, &result);
+            getaddrinfo(hostToConnect.c_str(), port, &hints, &result);
         if (retval != 0)
             throw JsonRpcException(Errors::ERROR_CLIENT_CONNECTOR,
                                    "Could not resolve hostname.");
@@ -116,7 +116,7 @@ SOCKET WindowsTcpSocketClient::Connect() throw(JsonRpcException)
                 {
                     SOCKADDR_IN *sock = reinterpret_cast<SOCKADDR_IN *>(temp->ai_addr);
                     socket_fd =
-                        this->Connect(inet_ntoa(sock->sin_addr), ntohs(sock->sin_port));
+                        Connect(inet_ntoa(sock->sin_addr), ntohs(sock->sin_port));
                     foundValidIp = true;
                 }
                 catch (const JsonRpcException &e)

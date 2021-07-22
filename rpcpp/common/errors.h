@@ -18,14 +18,14 @@ namespace rpcpp
     {
     public:
         static std::string GetErrorMessage(int errorCode);
-        // static class _init
-        // {
-        // public:
-        //     _init();
-        // } _initializer;
+        static class _init
+        {
+        public:
+            _init();
+        } _initializer;
 
         /**
-             * Official JSON-RPC 2.0 Errors
+             * Official RPC
              */
         static const int ERROR_RPC_JSON_PARSE_ERROR;
         static const int ERROR_RPC_METHOD_NOT_FOUND;
@@ -39,8 +39,6 @@ namespace rpcpp
         static const int ERROR_SERVER_PROCEDURE_IS_METHOD;
         static const int ERROR_SERVER_PROCEDURE_IS_NOTIFICATION;
         static const int ERROR_SERVER_PROCEDURE_POINTER_IS_NULL;
-        static const int ERROR_SERVER_PROCEDURE_SPECIFICATION_NOT_FOUND;
-        static const int ERROR_SERVER_PROCEDURE_SPECIFICATION_SYNTAX;
         static const int ERROR_SERVER_CONNECTOR;
 
         /**

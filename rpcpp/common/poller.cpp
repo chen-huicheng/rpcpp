@@ -36,6 +36,8 @@ int Poller::wait(std::vector<epoll_event> &events,int timeout) {
 int Poller::setnonblocking(int fd) {
     int old_option = fcntl(fd, F_GETFL, 0);
     int new_option = old_option | O_NONBLOCK;
-    fcntl(fd, F_SETFL, new_option);
+    if(fcntl(fd, F_SETFL, new_option)!=0){
+        
+    }
     return old_option;
 }

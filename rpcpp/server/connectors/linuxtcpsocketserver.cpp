@@ -17,9 +17,8 @@
 #include <string>
 
 using namespace rpcpp;
-// using namespace std;
 
-LinuxTcpSocketServer::LinuxTcpSocketServer(const std::string &ip, const unsigned int &port) : ip(ip), port(port), stop(false), reader(DEFAULT_BUFFER_SIZE){}
+LinuxTcpSocketServer::LinuxTcpSocketServer(const std::string &ip, const unsigned int &port) : ip(ip), port(port), stop(false){}
 
 LinuxTcpSocketServer::~LinuxTcpSocketServer()
 {
@@ -69,7 +68,6 @@ void LinuxTcpSocketServer::run()
         int number = poller.wait(events, -1);
         if (number < 0 && errno != EINTR)
         {
-            // LOG_ERROR("epoll failure\n");
             break;
         }
         for (int i = 0; i < number; i++)
@@ -82,7 +80,6 @@ void LinuxTcpSocketServer::run()
                 int connfd = accept(listenfd, (struct sockaddr *)&client_address, &client_addrlength);
                 if (connfd < 0)
                 {
-                    // LOG_ERROR("%s:errno is:%d\n", "accept error", errno);
                     break;
                 }
                 int rt = poller.addfd(connfd, false);
@@ -98,8 +95,13 @@ void LinuxTcpSocketServer::run()
             }
             else if (events[i].events & EPOLLIN)
             {
-                reader.Read();
-                ProcessRequest()
+                std::string target,result;
+                if(msg.ReadMessage(sockfd,target)!=0){
+                    poller.removefd(sockfd);
+                    continue;
+                }
+                ProcessRequest(target,result);
+                msg.SendMessage(sockfd,result);
             }
             else
             {

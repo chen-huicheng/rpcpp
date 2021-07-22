@@ -3,17 +3,18 @@
 #define RPCPP_CLIENT_CLIENT_H_
 
 #include <jsoncpp/json/json.h>
-#include "rpcpp/client/iclientconnector.h"
-#include "rpcpp/common/noncopyable.h"
 #include <vector>
 #include <memory>
 #include <map>
+
+#include "rpcpp/client/iclientconnector.h"
+#include "rpcpp/common/noncopyable.h"
 
 namespace rpcpp
 {
     class RpcProtocolClient;
 
-    class Client//:public noncopyable
+    class Client : public noncopyable
     {
     public:
         Client(IClientConnector &connector);
@@ -25,8 +26,8 @@ namespace rpcpp
         void CallNotification(const std::string &name, const Json::Value &parameter);
 
     private:
-        std::shared_ptr<IClientConnector> connector;
-        std::shared_ptr<RpcProtocolClient> protocol;
+        IClientConnector &connector;
+        RpcProtocolClient protocol;
     };
 
 }

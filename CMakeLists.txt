@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.4.1)
-PROJECT(rpcpp)
+PROJECT(rpcpp_test)
 
-set(project_name rpcpp)
+set(project_name rpcpp_test)
 set(project_root ${PROJECT_SOURCE_DIR})
 set(project_src ${project_root}/rpcpp)
 set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR})
@@ -17,21 +17,21 @@ find_package(jsoncpp CONFIG REQUIRED)
 
 include_directories(
     /usr/include/
-    ${project_src}/
+    ${project_root}/
 )
 
 link_directories(
     /usr/lib/aarch64-linux-gnu/
 )
 
-aux_source_directory(${project_src}/ src)
+aux_source_directory(${project_root}/ src)
 
-# add_executable(${project_name} ${src})
+add_executable(${project_name} ${src})
 
-# target_link_libraries(
-#     ${project_name}
-#     -ljsoncpp
-#     -lpthread
-# )
-# add_subdirectory(rpcpp)
+target_link_libraries(
+    ${project_name}
+    -ljsoncpp
+    -lpthread
+)
+add_subdirectory(rpcpp)
 # target_link_libraries(main PRIVATE jsoncpp_object jsoncpp_static)

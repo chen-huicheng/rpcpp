@@ -7,62 +7,40 @@
 #include <vector>
 #include <functional>
 #include <jsoncpp/json/json.h>
-#include "rpcpp/server/abstractserverconnector.h"
-#include "rpcpp/server/rpcprotocolserver.h"
 
+#include "rpcpp/server/iserverconnector.h"
+#include "rpcpp/server/rpcprotocolserver.h"
+using namespace std::placeholders; 
 namespace rpcpp
 {
     class RpcServer
     {
-        public:
-            typedef std::function<void(const Json::Value &parameter, Json::Value &result)> methodPointer_t;
-            typedef std::function<void(const Json::Value &parameter)> notificationPointer_t;
+    public:
+        typedef std::function<void(const Json::Value &parameter, Json::Value &result)> methodPointer_t;
+        typedef std::function<void(const Json::Value &parameter)> notificationPointer_t;
 
-            RpcServer(AbstractServerConnector &connector):connection(connector){}
+        RpcServer(IServerConnector &connector) ;
 
-            virtual ~RpcServer();
-            bool StartListening(){
-                connection.StartListening();
-            }
+        virtual ~RpcServer();
+        
+        bool StartListening();
 
-            bool StopListening(){
-                connection.StopListening();
-            }
-            void HandleMethodCall(std::string &methodname, const Json::Value& input, Json::Value& output)
-            {
-                methods[methodname](input, output);
-            }
+        bool StopListening();
 
-            void HandleNotificationCall(std::string &notificationname, const Json::Value& input)
-            {
-                notifications[notificationname](input);
-            }
-            bool AddMethod(std::string &methodname, methodPointer_t pointer)
-            {
-                methods[methodname] = pointer;
-            }
+        void handler(const std::string &request,std::string &response);
 
-            bool AddNotification(std::string &notificationname, notificationPointer_t pointer)
-            {
-                if()
-                notifications[notificationname] = pointer;
-                return false;
-            }
+        void HandleMethodCall(std::string &methodname, const Json::Value &input, Json::Value &output);
 
-        private:
-            AbstractServerConnector                         &connection;
-            RpcProtocolServer                               &rpcprotocol;
-            std::map<std::string, methodPointer_t>          methods;
-            std::map<std::string, notificationPointer_t>    notifications;
+        void HandleNotificationCall(std::string &notificationname, const Json::Value &input);
 
-            bool symbolExists(const std::string &name)
-            {
-                if (methods.find(name) != methods.end())
-                    return true;
-                if (notifications.find(name) != notifications.end())
-                    return true;
-                return false;
-            }
+        bool AddMethod(std::string &methodname, methodPointer_t pointer);
+
+        bool AddNotification(std::string &notificationname, notificationPointer_t pointer);
+    private:
+        IServerConnector &connection;
+        RpcProtocolServer rpcprotocol;
+        std::map<std::string, methodPointer_t> methods;
+        std::map<std::string, notificationPointer_t> notifications;
     };
 
 } /* namespace rpcpp */

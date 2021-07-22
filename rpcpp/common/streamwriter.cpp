@@ -3,7 +3,7 @@
 
 using namespace rpcpp;
 
-bool StreamWriter::Write(const std::string &source, int fd)
+bool StreamWriter::Write(int fd, const std::string &source)
 {
     ssize_t bytesWritten;
     size_t totalSize = source.size();

@@ -9,20 +9,21 @@
 using namespace rpcpp;
 // using namespace std;
 
-TcpSocketClient::TcpSocketClient(const std::string &ipToConnect,
-                                 const unsigned int &port) {
+TcpSocketClient::TcpSocketClient(const std::string &ipToConnect,const unsigned int &port)
+{
 #ifdef _WIN32
-  this->realSocket = new WindowsTcpSocketClient(ipToConnect, port);
+    realSocket = new WindowsTcpSocketClient(ipToConnect, port);
 #else
-  this->realSocket = new LinuxTcpSocketClient(ipToConnect, port);
+    realSocket = new LinuxTcpSocketClient(ipToConnect, port);
 #endif
 }
 
-TcpSocketClient::~TcpSocketClient() { delete this->realSocket; }
+TcpSocketClient::~TcpSocketClient() { delete realSocket; }
 
-void TcpSocketClient::SendRPCMessage(const std::string &message,
-                                     std::string &result) {
-  if (this->realSocket != NULL) {
-    this->realSocket->SendRPCMessage(message, result);
-  }
+void TcpSocketClient::SendRPCMessage(const std::string &message,std::string &result)
+{
+    if (realSocket != NULL)
+    {
+        realSocket->SendRPCMessage(message, result);
+    }
 }

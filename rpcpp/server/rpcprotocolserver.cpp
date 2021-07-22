@@ -1,131 +1,102 @@
 
-#include "rpcprotocolserver.h"
-#include <iostream>
+#include "rpcpp/server/rpcprotocolserver.h"
 #include "rpcpp/common/errors.h"
+#include <iostream>
 
-using namespace std;
 using namespace rpcpp;
 
-void RpcProtocolServer::HandleJsonRequest(const Json::Value &req,
-                                            Json::Value &response)
+const std::string RpcProtocolServer::KEY_REQUEST_METHODNAME = "method";
+const std::string RpcProtocolServer::KEY_REQUEST_ID = "id";
+const std::string RpcProtocolServer::KEY_REQUEST_PARAMETERS = "params";
+const std::string RpcProtocolServer::KEY_RESPONSE_RESULT = "result";
+const std::string RpcProtocolServer::KEY_ERROR = "error";
+const std::string RpcProtocolServer::KEY_ERROR_CODE = "code";
+const std::string RpcProtocolServer::KEY_ERROR_MESSAGE = "message";
+const std::string RpcProtocolServer::KEY_ERROR_DATA = "data";
+
+Json::Value RpcProtocolServer::HandleRequest(const std::string &request)
 {
-    // It could be a Batch Request
-    if (req.isArray())
-    {
-        this->HandleBatchRequest(req, response);
-    } // It could be a simple Request
-    else if (req.isObject())
-    {
-        this->HandleSingleRequest(req, response);
-    }
-    else
-    {
-        this->WrapError(Json::nullValue, Errors::ERROR_RPC_INVALID_REQUEST,
-                        Errors::GetErrorMessage(Errors::ERROR_RPC_INVALID_REQUEST),
-                        response);
-    }
+    Json::Value result;
+    HandleRequest(request, result);
+    return result;
 }
-void RpcProtocolServer::HandleSingleRequest(const Json::Value &req,
-                                              Json::Value &response)
+void RpcProtocolServer::HandleRequest(const std::string &request, Json::Value &result)
 {
-    int error = this->ValidateRequest(req);
-    if (error == 0)
+    Json::Reader reader;
+    try
     {
-        try
+        if (reader.parse(request, result, false))
         {
-            this->ProcessRequest(req, response);
+            if (!ValidateRequest(result))
+            {
+                WrapError(Json::nullValue, Errors::ERROR_RPC_INVALID_REQUEST, Errors::GetErrorMessage(Errors::ERROR_RPC_INVALID_REQUEST), result);
+            }
         }
-        catch (const RpcException &exc)
+        else
         {
-            this->WrapException(req, exc, response);
+            WrapError(Json::nullValue, Errors::ERROR_RPC_JSON_PARSE_ERROR, Errors::GetErrorMessage(Errors::ERROR_RPC_JSON_PARSE_ERROR), result);
         }
     }
-    else
+    catch (const Json::Exception &e)
     {
-        this->WrapError(req, error, Errors::GetErrorMessage(error), response);
+        WrapError(Json::nullValue, Errors::ERROR_RPC_JSON_PARSE_ERROR, Errors::GetErrorMessage(Errors::ERROR_RPC_JSON_PARSE_ERROR), result);
     }
 }
-void RpcProtocolServer::HandleBatchRequest(const Json::Value &req,
-                                             Json::Value &response)
+
+void RpcProtocolServer::BuildResponse(const Json::Value &request, const Json::Value &result, std::string &response)
 {
-    if (req.empty())
-        this->WrapError(Json::nullValue, Errors::ERROR_RPC_INVALID_REQUEST,
-                        Errors::GetErrorMessage(Errors::ERROR_RPC_INVALID_REQUEST),
-                        response);
-    else
-    {
-        for (unsigned int i = 0; i < req.size(); i++)
-        {
-            Json::Value result;
-            this->HandleSingleRequest(req[i], result);
-            if (result != Json::nullValue)
-                response.append(result);
-        }
-    }
+    Json::Value jresponse;
+    Json::StreamWriterBuilder wbuilder;
+    jresponse[KEY_REQUEST_ID] = request[KEY_REQUEST_ID];
+    jresponse[KEY_RESPONSE_RESULT] = result;
+    response = Json::writeString(wbuilder, jresponse);
 }
-bool RpcProtocolServer::ValidateRequestFields(const Json::Value &request)
+
+std::string RpcProtocolServer::BuildResponse(const Json::Value &request, const Json::Value &result)
+{
+    std::string response;
+    BuildResponse(request,result,response);
+    return response;
+}
+
+bool RpcProtocolServer::ValidateRequest(const Json::Value &request)
 {
     if (!request.isObject())
         return false;
-    if (!(request.isMember(KEY_REQUEST_METHODNAME) &&
-          request[KEY_REQUEST_METHODNAME].isString()))
+    if (!(request.isMember(KEY_REQUEST_METHODNAME) && request[KEY_REQUEST_METHODNAME].isString()))
         return false;
-    if (!(request.isMember(KEY_REQUEST_VERSION) &&
-          request[KEY_REQUEST_VERSION].isString() &&
-          request[KEY_REQUEST_VERSION].asString() == JSON_RPC_VERSION2))
+    if (request.isMember(KEY_REQUEST_ID) && !request[KEY_REQUEST_ID].isIntegral())
         return false;
-    if (request.isMember(KEY_REQUEST_ID) &&
-        !(request[KEY_REQUEST_ID].isIntegral() ||
-          request[KEY_REQUEST_ID].isString() || request[KEY_REQUEST_ID].isNull()))
-        return false;
-    if (request.isMember(KEY_REQUEST_PARAMETERS) &&
-        !(request[KEY_REQUEST_PARAMETERS].isObject() ||
-          request[KEY_REQUEST_PARAMETERS].isArray() ||
-          request[KEY_REQUEST_PARAMETERS].isNull()))
+    if (request.isMember(KEY_REQUEST_PARAMETERS) && !request[KEY_REQUEST_PARAMETERS].isObject())
         return false;
     return true;
 }
 
-void RpcProtocolServer::WrapResult(const Json::Value &request,
-                                     Json::Value &response,
-                                     Json::Value &result)
+void RpcProtocolServer::WrapResult(const Json::Value &request, Json::Value &response, Json::Value &result)
 {
-    response[KEY_REQUEST_VERSION] = JSON_RPC_VERSION2;
     response[KEY_RESPONSE_RESULT] = result;
     response[KEY_REQUEST_ID] = request[KEY_REQUEST_ID];
 }
 
-void RpcProtocolServer::WrapError(const Json::Value &request, int code,
-                                    const string &message,
-                                    Json::Value &result)
+void RpcProtocolServer::WrapError(const Json::Value &request, int code, const std::string &message, Json::Value &result)
 {
-    result["jsonrpc"] = "2.0";
-    result["error"]["code"] = code;
-    result["error"]["message"] = message;
+    result[KEY_ERROR][KEY_ERROR_CODE] = code;
+    result[KEY_ERROR][KEY_ERROR_MESSAGE] = message;
 
-    if (request.isObject() && request.isMember("id") &&
-        (request["id"].isNull() || request["id"].isIntegral() ||
-         request["id"].isString()))
+    if (request.isObject() && request.isMember(KEY_REQUEST_ID) &&
+        (request[KEY_REQUEST_ID].isNull() || request[KEY_REQUEST_ID].isIntegral() ||
+         request[KEY_REQUEST_ID].isString()))
     {
-        result["id"] = request["id"];
+        result[KEY_REQUEST_ID] = request[KEY_REQUEST_ID];
     }
     else
     {
-        result["id"] = Json::nullValue;
+        result[KEY_REQUEST_ID] = Json::nullValue;
     }
 }
 
-void RpcProtocolServer::WrapException(const Json::Value &request,
-                                        const RpcException &exception,
-                                        Json::Value &result)
+void RpcProtocolServer::WrapException(const Json::Value &request, const RpcException &exception, Json::Value &result)
 {
-    this->WrapError(request, exception.GetCode(), exception.GetMessage(), result);
-    result["error"]["data"] = exception.GetData();
-}
-
-procedure_t RpcProtocolServer::GetRequestType(const Json::Value &request)
-{
-    if (request.isMember(KEY_REQUEST_ID))
-        return RPC_METHOD;
-    return RPC_NOTIFICATION;
+    WrapError(request, exception.GetCode(), exception.GetMessage(), result);
+    result[KEY_ERROR][KEY_ERROR_DATA] = exception.GetData();
 }

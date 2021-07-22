@@ -1,12 +1,12 @@
-add_executable(jrpcstub
+add_executable(rpcppstub
         StubGenerator.h
-        StubGenerator.cc
+        StubGenerator.cpp
         ServiceStubGenerator.h
-        ServiceStubGenerator.cc
+        ServiceStubGenerator.cpp
         ClientStubGenerator.h
-        ClientStubGenerator.cc
-        main.cc
+        ClientStubGenerator.cpp
+        main.cpp
         )
 
-target_link_libraries(jrpcstub jackson)
-install(TARGETS jrpcstub DESTINATION bin)
+target_link_libraries(rpcppstub jackson)
+install(TARGETS rpcppstub DESTINATION bin)

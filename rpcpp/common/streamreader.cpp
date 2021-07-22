@@ -10,12 +10,12 @@ StreamReader::StreamReader(size_t buffersize)
 
 StreamReader::~StreamReader() { free(buffer); }
 
-bool StreamReader::Read(std::string &target, int fd, size_t len)
+bool StreamReader::Read(int fd, std::string &target, size_t len)
 {
     ssize_t bytesRead;
     do
     {
-        bytesRead = read(fd, this->buffer, std::min(len, buffersize));
+        bytesRead = read(fd, buffer, std::min(len, buffersize));
         if (bytesRead < 0)
         {
             return false;
@@ -23,7 +23,7 @@ bool StreamReader::Read(std::string &target, int fd, size_t len)
         else
         {
             target.append(buffer, static_cast<size_t>(bytesRead));
-            len-=bytesRead;
+            len -= bytesRead;
         }
     } while (len);
     return true;

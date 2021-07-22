@@ -9,7 +9,7 @@ namespace rpcpp
     class StreamWriter
     {
     public:
-        bool Write(const std::string &source, int fd);
+        bool Write(int fd, const std::string &source);
     };
 
 }

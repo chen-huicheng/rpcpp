@@ -2,7 +2,7 @@
 #define RPCPP_CPP_TCPSOCKETCLIENT_H_
 
 #include "rpcpp/client/iclientconnector.h"
-#include "rpcpp/common/exception.h"
+#include "rpcpp/common/rpcexception.h"
 #include <string>
 
 namespace rpcpp
