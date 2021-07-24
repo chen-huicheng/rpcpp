@@ -4,7 +4,8 @@
 #include <fstream>
 #include <jsoncpp/json/json.h>
 
-#include "rpcpp/client/rpcprotocolclient.h"
+#include "rpcpp/client/client.h"
+#include "rpcpp/server/server.h"
 using namespace std;
 int main()
 {
@@ -36,17 +37,23 @@ int main()
     // reader.parse(result,response);
 
     // cout<<response<<endl;
-    // Json::StyledWriter sw;
-    // Json::Value para;
-    // ofstream os;
-	// os.open("demo.json");
-	// os << sw.write(para);
-	// os.close();
-    // rpcpp::RpcProtocolClient rpc;
-    // std::string request;
-    // rpc.BuildRequest("echo",para,request,false);
+    Json::StyledWriter sw;
+    Json::Value para,result;
+    ofstream os;
+	os.open("demo.json");
+	os << sw.write(para);
+	os.close();
+    rpcpp::RpcProtocolClient rpc;
+    std::string request;
+    std::string method = "echo";
+    rpc.BuildRequest(method,para,request,false);
 
-    // cout<<request<<endl;
+
+    rpcpp::RpcProtocolServer serverrpc;
+    cout<<request<<endl;
+    serverrpc.HandleRequest(request,result);
+    cout<<result<<endl;
+    
 
     return 0;
 }

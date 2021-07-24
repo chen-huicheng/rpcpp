@@ -11,6 +11,7 @@ namespace rpcpp
     class RpcProtocolClient
     {
     public:
+        RpcProtocolClient() : id(0) {}
         std::string BuildRequest(const std::string &method, const Json::Value &parameter, bool isNotification);
 
         void BuildRequest(const std::string &method, const Json::Value &parameter, std::string &result, bool isNotification);

@@ -5,11 +5,10 @@
 #include <unistd.h>
 
 #include <jsoncpp/json/json.h>
-#include "rpcpp/stub/ServiceStubGenerator.h"
-#include "rpcpp/stub/ClientStubGenerator.h"
-#include "rpcpp/common/exception.h"
+#include "ServiceStubGenerator.h"
+#include "ClientStubGenerator.h"
 
-using namespace jrpc;
+using namespace rpcpp;
 
 static void usage()
 {
@@ -38,7 +37,7 @@ static void writeToFile(StubGenerator& generator, bool outputToFile)
 }
 
 static std::unique_ptr<StubGenerator>
-makeGenerator(bool serverSide, json::Value& proto)
+makeGenerator(bool serverSide, Json::Value& proto)
 {
     if (serverSide)
         return std::make_unique<ServiceStubGenerator>(proto);
@@ -48,11 +47,11 @@ makeGenerator(bool serverSide, json::Value& proto)
 
 static void genStub(FILE* input, bool serverSide, bool outputToFile)
 {
-    json::FileReadStream is(input);
-    json::Document proto;
+    Json::FileReadStream is(input);
+    Json::Document proto;
     auto err = proto.parseStream(is);
-    if (err != json::PARSE_OK) {
-        fprintf(stderr, "%s\n", json::parseErrorStr(err));
+    if (err != Json::PARSE_OK) {
+        fprintf(stderr, "%s\n", Json::parseErrorStr(err));
         exit(1);
     }
 

@@ -1,11 +1,8 @@
+include_directories(../..)
+aux_source_directory(. src)
+# aux_source_directory( src)
 add_executable(rpcppstub
-        StubGenerator.h
-        StubGenerator.cpp
-        ServiceStubGenerator.h
-        ServiceStubGenerator.cpp
-        ClientStubGenerator.h
-        ClientStubGenerator.cpp
-        main.cpp
+        ${src}
         )
 
 target_link_libraries(rpcppstub jackson)

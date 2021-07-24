@@ -48,9 +48,9 @@ target_link_libraries(
 set_target_properties(rpcpp_example PROPERTIES LINKER_LANGUAGE CXX)
 install(TARGETS rpcpp_example DESTINATION lib)
 
-# set(HEADERS
-#     server/server.h
-#     client/client.h)
-# install(FILES ${HEADERS} DESTINATION include)
+set(HEADERS
+    server/server.h
+    client/client.h)
+install(FILES ${HEADERS} DESTINATION include)
 
-# add_subdirectory(stub)
+add_subdirectory(stub)

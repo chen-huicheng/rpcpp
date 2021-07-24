@@ -2,10 +2,10 @@
 // Created by frank on 18-1-24.
 //
 
-#ifndef JRPC_CLIENTSTUBGENERATOR_H
-#define JRPC_CLIENTSTUBGENERATOR_H
+#ifndef rpcpp_CLIENTSTUBGENERATOR_H
+#define rpcpp_CLIENTSTUBGENERATOR_H
 
-#include "rpcpp/stub/StubGenerator.h"
+#include "StubGenerator.h"
 
 namespace rpcpp
 {
@@ -34,4 +34,4 @@ namespace rpcpp
 
 }
 
-#endif //JRPC_CLIENTSTUBGENERATOR_H
+#endif //rpcpp_CLIENTSTUBGENERATOR_H

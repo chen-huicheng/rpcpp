@@ -2,8 +2,8 @@
 // Created by frank on 18-1-23.
 //
 
-#ifndef JRPC_STUBGENERATOR_H
-#define JRPC_STUBGENERATOR_H
+#ifndef rpcpp_STUBGENERATOR_H
+#define rpcpp_STUBGENERATOR_H
 
 #include <jsoncpp/json/json.h>
 
@@ -23,13 +23,9 @@ namespace rpcpp
         virtual std::string genStubClassName() = 0;
 
     protected:
-        struct RpcReturn
+        struct RpcMethod
         {
-            RpcReturn(const std::string &name_,
-                      Json::Value &params_,
-                      Json::Value &returns_) : name(name_),
-                                               params(params_),
-                                               returns(returns_)
+            RpcMethod(const std::string &name_, Json::Value &params_, Json::Value &returns_) : name(name_), params(params_), returns(returns_)
             {
             }
 
@@ -38,11 +34,9 @@ namespace rpcpp
             mutable Json::Value returns;
         };
 
-        struct RpcNotify
+        struct RpcNotification
         {
-            RpcNotify(const std::string &name_,
-                      Json::Value &params_) : name(name_),
-                                              params(params_)
+            RpcNotification(const std::string &name_, Json::Value &params_) : name(name_), params(params_)
             {
             }
 
@@ -53,8 +47,8 @@ namespace rpcpp
         struct ServiceInfo
         {
             std::string name;
-            std::vector<RpcReturn> rpcReturn;
-            std::vector<RpcNotify> rpcNotify;
+            std::vector<RpcMethod> rpcReturn;
+            std::vector<RpcNotification> rpcNotify;
         };
 
         ServiceInfo serviceInfo_;
@@ -82,4 +76,4 @@ namespace rpcpp
 
 }
 
-#endif //JRPC_STUBGENERATOR_H
+#endif //rpcpp_STUBGENERATOR_H

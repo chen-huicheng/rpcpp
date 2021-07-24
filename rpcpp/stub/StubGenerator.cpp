@@ -4,7 +4,7 @@
 
 #include <unordered_set>
 
-#include "rpcpp/stub/StubGenerator.h"
+#include "StubGenerator.h"
 #include "rpcpp/common/rpcexception.h"
 
 using namespace rpcpp;
@@ -16,20 +16,20 @@ namespace
     {
         if (!result)
         {
-            throw StubException(errMsg);
+            throw RpcException(errMsg);
         }
     }
 
 }
 
-void StubGenerator::parseProto(json::Value &proto)
+void StubGenerator::parseProto(Json::Value &proto)
 {
     expect(proto.isObject(),
            "expect object");
-    expect(proto.getSize() == 2,
-           "expect 'name' and 'rpc' fields in object");
+    expect(proto.isMember("name") == 2,
+           "expect 'name' fields in object");
 
-    auto name = proto.findMember("name");
+    auto name = proto["name"];
 
     expect(name != proto.memberEnd(),
            "missing service name");
@@ -50,7 +50,7 @@ void StubGenerator::parseProto(json::Value &proto)
     }
 }
 
-void StubGenerator::parseRpc(json::Value &rpc)
+void StubGenerator::parseRpc(Json::Value &rpc)
 {
     expect(rpc.isObject(),
            "rpc definition must be object");
@@ -75,21 +75,21 @@ void StubGenerator::parseRpc(json::Value &rpc)
         validateReturns(returns->value);
     }
 
-    auto paramsValue = hasParams ? params->value : json::Value(json::TYPE_OBJECT);
+    auto paramsValue = hasParams ? params->value : Json::Value(Json::TYPE_OBJECT);
 
     if (hasReturns)
     {
-        RpcReturn r(name->value.getString(), paramsValue, returns->value);
+        RpcMethod r(name->value.getString(), paramsValue, returns->value);
         serviceInfo_.rpcReturn.push_back(r);
     }
     else
     {
-        RpcNotify r(name->value.getString(), paramsValue);
+        RpcNotification r(name->value.getString(), paramsValue);
         serviceInfo_.rpcNotify.push_back(r);
     }
 }
 
-void StubGenerator::validateParams(json::Value &params)
+void StubGenerator::validateParams(Json::Value &params)
 {
     std::unordered_set<std::string_view> set;
 
@@ -102,7 +102,7 @@ void StubGenerator::validateParams(json::Value &params)
 
         switch (p.value.getType())
         {
-        case json::TYPE_NULL:
+        case Json::TYPE_NULL:
             expect(false, "bad param type");
             break;
         default:
@@ -111,15 +111,15 @@ void StubGenerator::validateParams(json::Value &params)
     }
 }
 
-void StubGenerator::validateReturns(json::Value &returns)
+void StubGenerator::validateReturns(Json::Value &returns)
 {
     switch (returns.getType())
     {
-    case json::TYPE_NULL:
-    case json::TYPE_ARRAY:
+    case Json::TYPE_NULL:
+    case Json::TYPE_ARRAY:
         expect(false, "bad returns type");
         break;
-    case json::TYPE_OBJECT:
+    case Json::TYPE_OBJECT:
         validateParams(returns);
         break;
     default:

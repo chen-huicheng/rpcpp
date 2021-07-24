@@ -4,15 +4,13 @@
 #define RPCPP_CPP_ERRORS_H_
 
 #include <map>
-// #include <iostream>
-// #include <string.h>
 #include <string>
 
 #include <jsoncpp/json/json.h>
 
 namespace rpcpp
 {
-    class RpcException;
+    // class RpcException;
 
     class Errors
     {

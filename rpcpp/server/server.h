@@ -9,7 +9,6 @@
 #include <functional>
 #include <jsoncpp/json/json.h>
 
-// #include "rpcpp/server/irpchandler.h"
 #include "rpcpp/server/iserverconnector.h"
 #include "rpcpp/server/rpcprotocolserver.h"
 using namespace std::placeholders; 
@@ -41,7 +40,6 @@ namespace rpcpp
     private:
         IServerConnector &connection;
         RpcProtocolServer rpcprotocol;
-        // std::shared_ptr<IRPCHandler> handler;
         std::map<std::string, methodPointer_t> methods;
         std::map<std::string, notificationPointer_t> notifications;
     };

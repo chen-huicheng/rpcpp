@@ -1,6 +1,7 @@
 {
-   "name" : "add",
-   "para1" : 1,
-   "para2" : 2,
-   "type" : "int"
+    "method": "echo",
+    "params": {
+        "p1": "hello"
+    },
+    "returns": "string"
 }

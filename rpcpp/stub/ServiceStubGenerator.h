@@ -2,11 +2,11 @@
 // Created by frank on 18-1-23.
 //
 
-#ifndef JRPC_SERVICESTUBGENERATOR_H
-#define JRPC_SERVICESTUBGENERATOR_H
+#ifndef rpcpp_SERVICESTUBGENERATOR_H
+#define rpcpp_SERVICESTUBGENERATOR_H
 
-#include "rpcpp/stub/StubGenerator.h"
-#include "rpcpp/common/rpcexception.h"
+#include "StubGenerator.h"
+
 namespace rpcpp
 {
 
@@ -46,4 +46,4 @@ private:
 
 
 
-#endif //JRPC_SERVICESTUBGENERATOR_H
+#endif //rpcpp_SERVICESTUBGENERATOR_H
