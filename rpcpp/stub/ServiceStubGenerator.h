@@ -6,7 +6,7 @@
 #define JRPC_SERVICESTUBGENERATOR_H
 
 #include "rpcpp/stub/StubGenerator.h"
-#include "rpcpp/common/exception.h"
+#include "rpcpp/common/rpcexception.h"
 namespace rpcpp
 {
 

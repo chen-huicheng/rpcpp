@@ -3,7 +3,7 @@
 #include <iostream>
 #include <fstream>
 #include <jsoncpp/json/json.h>
-#include "rpcpp/client/rpcprotocolclient.h"
+#include "client/rpcprotocolclient.h"
 using namespace std;
 int main()
 {
@@ -25,17 +25,17 @@ int main()
     // reader.parse(result,response);
 
 
-    Json::StyledWriter sw;
-    Json::Value para;
-    ofstream os;
-	os.open("demo.json");
-	os << sw.write(para);
-	os.close();
-    rpcpp::RpcProtocolClient rpc;
-    std::string request;
-    rpc.BuildRequest("echo",para,request,false);
+    // Json::StyledWriter sw;
+    // Json::Value para;
+    // ofstream os;
+	// os.open("demo.json");
+	// os << sw.write(para);
+	// os.close();
+    // rpcpp::RpcProtocolClient rpc;
+    // std::string request;
+    // rpc.BuildRequest("echo",para,request,false);
 
-    cout<<request<<endl;
+    // cout<<request<<endl;
 
     // ifstream in("demo.json", ios::binary);
     // reader.parse(result,response);

@@ -5,9 +5,11 @@
 #include <map>
 #include <string>
 #include <vector>
+#include <memory>
 #include <functional>
 #include <jsoncpp/json/json.h>
 
+// #include "rpcpp/server/irpchandler.h"
 #include "rpcpp/server/iserverconnector.h"
 #include "rpcpp/server/rpcprotocolserver.h"
 using namespace std::placeholders; 
@@ -27,7 +29,7 @@ namespace rpcpp
 
         bool StopListening();
 
-        void handler(const std::string &request,std::string &response);
+        void HandleCall(const std::string &request,std::string &response);
 
         void HandleMethodCall(std::string &methodname, const Json::Value &input, Json::Value &output);
 
@@ -39,9 +41,10 @@ namespace rpcpp
     private:
         IServerConnector &connection;
         RpcProtocolServer rpcprotocol;
+        // std::shared_ptr<IRPCHandler> handler;
         std::map<std::string, methodPointer_t> methods;
         std::map<std::string, notificationPointer_t> notifications;
     };
 
-} /* namespace rpcpp */
+}
 #endif /* RPCPP_CPP_ABSTRACTSERVER_H_ */

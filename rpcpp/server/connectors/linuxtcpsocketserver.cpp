@@ -18,7 +18,7 @@
 
 using namespace rpcpp;
 
-LinuxTcpSocketServer::LinuxTcpSocketServer(const std::string &ip, const unsigned int &port) : ip(ip), port(port), stop(false){}
+LinuxTcpSocketServer::LinuxTcpSocketServer(const std::string &ip, const unsigned int &port) : ip(ip), port(port), stop(false) {}
 
 LinuxTcpSocketServer::~LinuxTcpSocketServer()
 {
@@ -95,13 +95,14 @@ void LinuxTcpSocketServer::run()
             }
             else if (events[i].events & EPOLLIN)
             {
-                std::string target,result;
-                if(msg.ReadMessage(sockfd,target)!=0){
+                std::string target, result;
+                if (msg.ReadMessage(sockfd, target) != 0)
+                {
                     poller.removefd(sockfd);
                     continue;
                 }
-                ProcessRequest(target,result);
-                msg.SendMessage(sockfd,result);
+                ProcessRequest(target, result);
+                msg.SendMessage(sockfd, result);
             }
             else
             {
@@ -122,8 +123,16 @@ bool LinuxTcpSocketServer::StartListening()
     pthread_t pid;
     stop = false;
     int err = pthread_create(&pid, nullptr, eventloop, this);
+    if (err != 0)
+    {
+        return false;
+        stop = true;
+    }
+
+    return true;
 }
 bool LinuxTcpSocketServer::StopListening()
 {
     stop = true;
+    return true;
 }

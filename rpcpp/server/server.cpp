@@ -5,53 +5,54 @@ using namespace rpcpp;
 
 RpcServer::RpcServer(IServerConnector &connector) : connection(connector)
 {
-    auto cb = std::bind(handler, this, _1, _2);
-    connection.SetHandler(cb);
 }
 
 RpcServer::~RpcServer() {}
 
-void RpcServer::handler(const std::string &request, std::string &response)
+void RpcServer::HandleCall(const std::string &request, std::string &response)
 {
-    Json::Value input,output,params;
-    rpcprotocol.HandleRequest(request,input);
+    Json::Value input, output, params;
+    rpcprotocol.HandleRequest(request, input);
     std::string method = input["method"].asString();
-    if(input.isMember("params"))
-        params=input["params"];
-    if(input.isMember("id")){    
-        HandleMethodCall(method,params,output);
-        rpcprotocol.BuildResponse()
+    if (input.isMember("params"))
+        params = input["params"];
+    if (input.isMember("id"))
+    {
+        HandleMethodCall(method, params, output);
+        rpcprotocol.BuildResponse(input, output, response);
     }
-    else{
-        
+    else
+    {
+        HandleNotificationCall(method, params);
     }
-
 }
 
 bool RpcServer::StartListening()
 {
-    connection.StartListening();
+    auto cb = std::bind(&RpcServer::HandleCall, this,_1, _2);
+    connection.SetHandler(cb);
+    return connection.StartListening();
 }
 
 bool RpcServer::StopListening()
 {
-    connection.StopListening();
+    return connection.StopListening();
 }
 
-void RpcServer::HandleMethodCall(std::string &methodname, const Json::Value &input, Json::Value &output)
+void RpcServer::HandleMethodCall(std::string &methodname, const Json::Value &params, Json::Value &result)
 {
     if (methods.find(methodname) != methods.end())
-        methods[methodname](input, output);
+        methods[methodname](params, result);
     else
     {
-        rpcprotocol.WrapError(input, Errors::ERROR_RPC_METHOD_NOT_FOUND, Errors::GetErrorMessage(Errors::ERROR_RPC_METHOD_NOT_FOUND), output);
+        rpcprotocol.WrapError(params, Errors::ERROR_RPC_METHOD_NOT_FOUND, Errors::GetErrorMessage(Errors::ERROR_RPC_METHOD_NOT_FOUND), result);
     }
 }
 
-void RpcServer::HandleNotificationCall(std::string &notificationname, const Json::Value &input)
+void RpcServer::HandleNotificationCall(std::string &notificationname, const Json::Value &params)
 {
     if (notifications.find(notificationname) != notifications.end())
-        notifications[notificationname](input);
+        notifications[notificationname](params);
 }
 
 bool RpcServer::AddMethod(std::string &methodname, methodPointer_t pointer)

@@ -11,8 +11,9 @@ namespace rpcpp
     {
         public:
             TcpSocketClient(const std::string& ipToConnect, const unsigned int &port);
+            virtual ~TcpSocketClient();
             virtual void SendRPCMessage(const std::string& message, std::string& result) ;
-
+            virtual void SendRPCMessage(const std::string &message);
         private:
             IClientConnector *realSocket; 
     };

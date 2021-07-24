@@ -7,9 +7,8 @@
 #endif
 
 using namespace rpcpp;
-// using namespace std;
 
-TcpSocketClient::TcpSocketClient(const std::string &ipToConnect,const unsigned int &port)
+TcpSocketClient::TcpSocketClient(const std::string &ipToConnect, const unsigned int &port)
 {
 #ifdef _WIN32
     realSocket = new WindowsTcpSocketClient(ipToConnect, port);
@@ -20,7 +19,7 @@ TcpSocketClient::TcpSocketClient(const std::string &ipToConnect,const unsigned i
 
 TcpSocketClient::~TcpSocketClient() { delete realSocket; }
 
-void TcpSocketClient::SendRPCMessage(const std::string &message,std::string &result)
+void TcpSocketClient::SendRPCMessage(const std::string &message, std::string &result)
 {
     if (realSocket != NULL)
     {

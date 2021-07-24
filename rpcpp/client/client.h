@@ -9,11 +9,10 @@
 
 #include "rpcpp/client/iclientconnector.h"
 #include "rpcpp/common/noncopyable.h"
+#include "rpcpp/client/rpcprotocolclient.h"
 
 namespace rpcpp
 {
-    class RpcProtocolClient;
-
     class Client : public noncopyable
     {
     public:
