@@ -1,6 +1,6 @@
 
-#include "rpcpp/server/rpcprotocolserver.h"
-#include "rpcpp/common/errors.h"
+#include "rpcpp/server/RpcProtocolServer.h"
+#include "rpcpp/common/Errors.h"
 #include <iostream>
 
 using namespace rpcpp;

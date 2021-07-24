@@ -3,7 +3,7 @@
 #include <iostream>
 #include <fstream>
 #include <jsoncpp/json/json.h>
-#include "client/rpcprotocolclient.h"
+#include "client/RpcProtocolClient.h"
 using namespace std;
 int main()
 {

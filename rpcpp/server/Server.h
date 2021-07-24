@@ -9,8 +9,8 @@
 #include <functional>
 #include <jsoncpp/json/json.h>
 
-#include "rpcpp/server/iserverconnector.h"
-#include "rpcpp/server/rpcprotocolserver.h"
+#include "rpcpp/server/IServerConnector.h"
+#include "rpcpp/server/RpcProtocolServer.h"
 using namespace std::placeholders; 
 namespace rpcpp
 {

@@ -6,7 +6,7 @@
 #include <string>
 #include <exception>
 #include <jsoncpp/json/json.h>
-#include "rpcpp/common/errors.h"
+#include "rpcpp/common/Errors.h"
 
 namespace rpcpp
 {

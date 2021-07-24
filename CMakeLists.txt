@@ -39,5 +39,5 @@ target_link_libraries(
     -ljsoncpp
     -lpthread
 )
-# add_subdirectory(rpcpp)
+add_subdirectory(rpcpp)
 # target_link_libraries(main PRIVATE jsoncpp_object jsoncpp_static)

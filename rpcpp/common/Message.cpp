@@ -1,4 +1,4 @@
-#include "rpcpp/common/message.h"
+#include "rpcpp/common/Message.h"
 #include <netdb.h>
 #include <string.h>
 using namespace rpcpp;

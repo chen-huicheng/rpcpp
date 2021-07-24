@@ -2,7 +2,7 @@
 #define RPCPP_CPP_CLIENTCONNECTOR_H_
 
 #include <string>
-#include "rpcpp/common/rpcexception.h"
+#include "rpcpp/common/RpcException.h"
 
 namespace rpcpp
 {

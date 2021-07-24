@@ -2,9 +2,9 @@
 #ifndef RPCPP_COMMON_MESSAGE_H
 #define RPCPP_COMMON_MESSAGE_H
 #include <string>
-#include "rpcpp/common/streamreader.h"
-#include "rpcpp/common/streamwriter.h"
-#include "rpcpp/common/rpcexception.h"
+#include "rpcpp/common/StreamReader.h"
+#include "rpcpp/common/StreamWriter.h"
+#include "rpcpp/common/RpcException.h"
 namespace rpcpp
 {
     class Message

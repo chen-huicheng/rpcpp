@@ -1,9 +1,9 @@
-#include "rpcpp/client/connectors/tcpsocketclient.h"
+#include "rpcpp/client/connectors/TcpSocketClient.h"
 
 #ifdef _WIN32
-#include "windowstcpsocketclient.h"
+#include "rpcpp/client/connectors/WindowsTcpSocketClient.h"
 #else
-#include "rpcpp/client/connectors/linuxtcpsocketclient.h"
+#include "rpcpp/client/connectors/LinuxTcpSocketClient.h"
 #endif
 
 using namespace rpcpp;

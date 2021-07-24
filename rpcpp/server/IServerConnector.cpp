@@ -1,5 +1,5 @@
 
-#include "rpcpp/server/iserverconnector.h"
+#include "rpcpp/server/IServerConnector.h"
 #include <cstdlib>
 
 using namespace rpcpp;

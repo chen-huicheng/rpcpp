@@ -1,4 +1,4 @@
-#include "streamwriter.h"
+#include "StreamWriter.h"
 #include <unistd.h>
 
 using namespace rpcpp;

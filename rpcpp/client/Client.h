@@ -7,9 +7,9 @@
 #include <memory>
 #include <map>
 
-#include "rpcpp/client/iclientconnector.h"
+#include "rpcpp/client/IClientConnector.h"
 #include "rpcpp/common/noncopyable.h"
-#include "rpcpp/client/rpcprotocolclient.h"
+#include "rpcpp/client/RpcProtocolClient.h"
 
 namespace rpcpp
 {

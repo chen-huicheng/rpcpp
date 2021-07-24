@@ -1,4 +1,4 @@
-#include "windowstcpsocketclient.h"
+#include "WindowsTcpSocketClient.h"
 #include <cstdlib>
 #include <iostream>
 #include <string.h>

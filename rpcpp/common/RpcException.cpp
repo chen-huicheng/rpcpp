@@ -1,6 +1,6 @@
 
 
-#include "rpcpp/common/rpcexception.h"
+#include "rpcpp/common/RpcException.h"
 
 using namespace rpcpp;
 

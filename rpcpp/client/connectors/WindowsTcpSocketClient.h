@@ -1,9 +1,9 @@
 #ifndef RPCPP_CPP_WINDOWSTCPSOCKETCLIENT_H_
 #define RPCPP_CPP_WINDOWSTCPSOCKETCLIENT_H_
 
-#include "rpcpp/common/rpcexception.h"
+#include "rpcpp/common/RpcException.h"
 #include <string>
-#include "rpcpp/client/iclientconnector.h"
+#include "rpcpp/client/IClientConnector.h"
 #include <winsock2.h>
 
 namespace rpcpp

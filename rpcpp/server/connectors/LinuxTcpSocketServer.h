@@ -12,10 +12,10 @@
 #include <sys/time.h>
 #include <sys/types.h>
 #include <unistd.h>
-#include "rpcpp/server/iserverconnector.h"
-#include "rpcpp/common/streamreader.h"
-#include "rpcpp/common/streamwriter.h"
-#include "rpcpp/common/message.h"
+#include "rpcpp/server/IServerConnector.h"
+#include "rpcpp/common/StreamReader.h"
+#include "rpcpp/common/StreamWriter.h"
+#include "rpcpp/common/Message.h"
 
 namespace rpcpp
 {

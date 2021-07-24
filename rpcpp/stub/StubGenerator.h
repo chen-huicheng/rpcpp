@@ -46,12 +46,12 @@ namespace rpcpp
 
         struct ServiceInfo
         {
-            std::string name;
-            std::vector<RpcMethod> rpcReturn;
-            std::vector<RpcNotification> rpcNotify;
+            std::string classname;
+            std::vector<RpcMethod> method;
+            std::vector<RpcNotification> notification;
         };
 
-        ServiceInfo serviceInfo_;
+        ServiceInfo serviceinfo;
 
     private:
         void parseProto(Json::Value &proto);

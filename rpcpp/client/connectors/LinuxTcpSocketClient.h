@@ -1,10 +1,8 @@
 #ifndef RPCPP_CPP_LINUXTCPSOCKETCLIENT_H_
 #define RPCPP_CPP_LINUXTCPSOCKETCLIENT_H_
 
-#include "rpcpp/client/iclientconnector.h"
-#include "rpcpp/common/streamreader.h"
-#include "rpcpp/common/streamwriter.h"
-#include "rpcpp/common/message.h"
+#include "rpcpp/client/IClientConnector.h"
+#include "rpcpp/common/Message.h"
 namespace rpcpp
 {
     class LinuxTcpSocketClient : public IClientConnector

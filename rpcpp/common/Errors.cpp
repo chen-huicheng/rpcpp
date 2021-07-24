@@ -1,5 +1,5 @@
-#include "rpcpp/common/errors.h"
-#include "rpcpp/common/rpcexception.h"
+#include "rpcpp/common/Errors.h"
+#include "rpcpp/common/RpcException.h"
 
 using namespace rpcpp;
 

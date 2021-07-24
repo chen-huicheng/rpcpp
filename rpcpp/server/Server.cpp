@@ -1,6 +1,6 @@
 
-#include "rpcpp/server/server.h"
-#include "rpcpp/common/errors.h"
+#include "rpcpp/server/Server.h"
+#include "rpcpp/common/Errors.h"
 using namespace rpcpp;
 
 RpcServer::RpcServer(IServerConnector &connector) : connection(connector)

@@ -1,8 +1,8 @@
 #ifndef RPCPP_CPP_TCPSOCKETCLIENT_H_
 #define RPCPP_CPP_TCPSOCKETCLIENT_H_
 
-#include "rpcpp/client/iclientconnector.h"
-#include "rpcpp/common/rpcexception.h"
+#include "rpcpp/client/IClientConnector.h"
+#include "rpcpp/common/RpcException.h"
 #include <string>
 
 namespace rpcpp

@@ -10,7 +10,7 @@
 #include <string.h>
 #include <sys/socket.h>
 #include <unistd.h>
-#include "rpcpp/client/connectors/linuxtcpsocketclient.h"
+#include "rpcpp/client/connectors/LinuxTcpSocketClient.h"
 
 using namespace rpcpp;
 

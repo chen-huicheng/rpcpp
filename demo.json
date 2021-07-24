@@ -1,7 +1,12 @@
 {
-    "method": "echo",
-    "params": {
-        "p1": "hello"
-    },
-    "returns": "string"
+    "classname": "echo",
+    "rpc": [
+        {
+            "methodname": "echo",
+            "params": {
+                "message": "string"
+            },
+            "returns": "string"
+        }
+    ]
 }

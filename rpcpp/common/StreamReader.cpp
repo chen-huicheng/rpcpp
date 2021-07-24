@@ -1,4 +1,4 @@
-#include "streamreader.h"
+#include "StreamReader.h"
 #include <stdlib.h>
 #include <unistd.h>
 #include <algorithm>

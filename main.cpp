@@ -4,8 +4,8 @@
 #include <fstream>
 #include <jsoncpp/json/json.h>
 
-#include "rpcpp/client/client.h"
-#include "rpcpp/server/server.h"
+#include "rpcpp/client/Client.h"
+#include "rpcpp/server/Server.h"
 using namespace std;
 int main()
 {
@@ -39,10 +39,9 @@ int main()
     // cout<<response<<endl;
     Json::StyledWriter sw;
     Json::Value para,result;
-    ofstream os;
-	os.open("demo.json");
-	os << sw.write(para);
-	os.close();
+    Json::Reader reader;
+    ifstream in("demo.json", ios::binary);
+    reader.parse(in,para);
     rpcpp::RpcProtocolClient rpc;
     std::string request;
     std::string method = "echo";
@@ -54,6 +53,10 @@ int main()
     serverrpc.HandleRequest(request,result);
     cout<<result<<endl;
     
-
+    Json::Value::Members mem = result.getMemberNames();
+    for (std::string key : mem)
+    {
+        cout<<key<<endl;
+    }
     return 0;
 }

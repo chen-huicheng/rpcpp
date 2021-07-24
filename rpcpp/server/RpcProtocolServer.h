@@ -6,7 +6,7 @@
 #include <vector>
 #include <map>
 #include <jsoncpp/json/json.h>
-#include "rpcpp/common/rpcexception.h"
+#include "rpcpp/common/RpcException.h"
 
 namespace rpcpp
 {

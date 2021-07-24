@@ -1,8 +1,8 @@
 #ifndef RESPONSEHANDLER_H
 #define RESPONSEHANDLER_H
 #include <jsoncpp/json/json.h>
-#include "rpcpp/common/rpcexception.h"
-#include "rpcpp/common/errors.h"
+#include "rpcpp/common/RpcException.h"
+#include "rpcpp/common/Errors.h"
 #include <iostream>
 #include <string>
 

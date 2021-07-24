@@ -191,7 +191,7 @@ std::string ClientStubGenerator::genStub()
 
 std::string ClientStubGenerator::genMacroName()
 {
-    std::string result = serviceInfo_.name;
+    std::string result = serviceinfo.name;
     for (char& c: result)
         c = static_cast<char>(toupper(c));
     return result + "CLIENTSTUB";
@@ -199,16 +199,16 @@ std::string ClientStubGenerator::genMacroName()
 
 std::string ClientStubGenerator::genStubClassName()
 {
-    return serviceInfo_.name + "ClientStub";
+    return serviceinfo.name + "ClientStub";
 }
 
 std::string ClientStubGenerator::genProcedureDefinitions()
 {
     std::string result;
 
-    auto& serviceName = serviceInfo_.name;
+    auto& serviceName = serviceinfo.name;
 
-    for (auto& r: serviceInfo_.rpcReturn) {
+    for (auto& r: serviceinfo.method) {
         auto& procedureName = r.name;
         auto  procedureArgs = genGenericArgs(r, true);
         auto  paramMembers = genGenericParamMembers(r);
@@ -227,9 +227,9 @@ std::string ClientStubGenerator::genNotifyDefinitions()
 {
     std::string result;
 
-    auto& serviceName = serviceInfo_.name;
+    auto& serviceName = serviceinfo.name;
 
-    for (auto& r: serviceInfo_.rpcNotify) {
+    for (auto& r: serviceinfo.notification) {
         auto& notifyName = r.name;
         auto notifyArgs = genGenericArgs(r, false);
         auto paramMembers = genGenericParamMembers(r);

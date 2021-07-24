@@ -1,8 +1,6 @@
 
-#include "linuxtcpsocketserver.h"
-#include "rpcpp/common/streamreader.h"
-#include "rpcpp/common/streamwriter.h"
-#include "rpcpp/common/poller.h"
+#include "LinuxTcpSocketServer.h"
+#include "rpcpp/common/Poller.h"
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>

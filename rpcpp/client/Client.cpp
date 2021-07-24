@@ -1,6 +1,6 @@
 
-#include "rpcpp/client/client.h"
-#include "rpcpp/client/rpcprotocolclient.h"
+#include "rpcpp/client/Client.h"
+#include "rpcpp/client/RpcProtocolClient.h"
 
 using namespace rpcpp;
 
