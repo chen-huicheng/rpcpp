@@ -13,7 +13,7 @@ namespace rpcpp
     class ClientStubGenerator : public StubGenerator
     {
     public:
-        explicit ClientStubGenerator(json::Value &proto) : StubGenerator(proto)
+        explicit ClientStubGenerator(Json::Value &proto) : StubGenerator(proto)
         {
         }
 
@@ -27,7 +27,7 @@ namespace rpcpp
         std::string genNotifyDefinitions();
 
         template <typename Rpc>
-        std::string genGenericArgs(const Rpc &r, bool appendComma);
+        std::string genGenericArgs(const Rpc &r);
         template <typename Rpc>
         std::string genGenericParamMembers(const Rpc &r);
     };

@@ -58,5 +58,11 @@ int main()
     {
         cout<<key<<endl;
     }
+    para = 3;
+    int pa = para.asInt();
+    if(para.isObject()&&para.isMember("hello"))
+        cout<<"hello"<<endl;
+
     return 0;
 }
+

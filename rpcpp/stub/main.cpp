@@ -5,8 +5,12 @@
 #include <unistd.h>
 
 #include <jsoncpp/json/json.h>
+#include <memory>
+#include <utility>
+#include <fstream>
 #include "ServiceStubGenerator.h"
 #include "ClientStubGenerator.h"
+#include "rpcpp/common/RpcException.h"
 
 using namespace rpcpp;
 
@@ -36,30 +40,28 @@ static void writeToFile(StubGenerator& generator, bool outputToFile)
     fputs(stubString.c_str(), output);
 }
 
-static std::unique_ptr<StubGenerator>
+static std::shared_ptr<StubGenerator>
 makeGenerator(bool serverSide, Json::Value& proto)
 {
     if (serverSide)
-        return std::make_unique<ServiceStubGenerator>(proto);
+        return std::shared_ptr<ServiceStubGenerator>(proto);
     else
-        return std::make_unique<ClientStubGenerator>(proto);
+        return std::shared_ptr<ClientStubGenerator>(proto);
 }
 
-static void genStub(FILE* input, bool serverSide, bool outputToFile)
+static void genStub(const std::string filename, bool serverSide, bool outputToFile)
 {
-    Json::FileReadStream is(input);
-    Json::Document proto;
-    auto err = proto.parseStream(is);
-    if (err != Json::PARSE_OK) {
-        fprintf(stderr, "%s\n", Json::parseErrorStr(err));
-        exit(1);
-    }
+
+    std::ifstream input(filename.c_str(),std::ios::binary);
+    Json::Reader reader;
+    Json::Value proto;
+    reader.parse(input, proto);
 
     try {
         auto generator = makeGenerator(serverSide, proto);
         writeToFile(*generator, outputToFile);
     }
-    catch (StubException& e) {
+    catch (RpcException& e) {
         fprintf(stderr, "input error: %s\n", e.what());
         exit(1);
     }
@@ -70,7 +72,7 @@ int main(int argc, char** argv)
     bool serverSide = false;
     bool clientSide = false;
     bool outputToFile = false;
-    const char* inputFileName = nullptr;
+    std::string inputFileName = nullptr;
 
     int opt;
     while ((opt = getopt(argc, argv, "csi:o")) != -1) {
@@ -96,25 +98,15 @@ int main(int argc, char** argv)
         serverSide = clientSide = true;
     }
 
-    FILE* input = stdin;
-    if (inputFileName != nullptr) {
-        input = fopen(inputFileName, "r");
-        if (input == nullptr) {
-            perror("error");
-            exit(1);
-        }
-    }
-
     try {
         if (serverSide) {
-            genStub(input, true, outputToFile);
-            rewind(input);
+            genStub(inputFileName, true, outputToFile);
         }
         if (clientSide) {
-            genStub(input, false, outputToFile);
+            genStub(inputFileName, false, outputToFile);
         }
     }
-    catch (StubException& e) {
+    catch (RpcException& e) {
         fprintf(stderr, "input error: %s\n", e.what());
         exit(1);
     }

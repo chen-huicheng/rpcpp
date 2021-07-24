@@ -49,6 +49,10 @@ void RpcProtocolServer::BuildResponse(const Json::Value &request, const Json::Va
     Json::StreamWriterBuilder wbuilder;
     jresponse[KEY_REQUEST_ID] = request[KEY_REQUEST_ID];
     jresponse[KEY_RESPONSE_RESULT] = result;
+    if(result.isObject()&&result.isMember(KEY_ERROR)){
+        jresponse = result;
+    }
+        
     response = Json::writeString(wbuilder, jresponse);
 }
 

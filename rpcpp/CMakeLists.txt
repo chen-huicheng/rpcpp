@@ -24,8 +24,8 @@ set_target_properties(rpcpp_example PROPERTIES LINKER_LANGUAGE CXX)
 install(TARGETS rpcpp_example DESTINATION lib)
 
 set(HEADERS
-    server/server.h
-    client/client.h)
+    server/Server.h
+    client/Client.h)
 install(FILES ${HEADERS} DESTINATION include)
 
 add_subdirectory(stub)

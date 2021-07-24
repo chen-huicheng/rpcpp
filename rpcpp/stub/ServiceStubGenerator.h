@@ -14,9 +14,7 @@ class ServiceStubGenerator: public StubGenerator
 {
 public:
     explicit
-    ServiceStubGenerator(Json::Value& proto):
-            StubGenerator(proto)
-    {}
+    ServiceStubGenerator(Json::Value& proto): StubGenerator(proto){}
 
     std::string genStub() override;
     std::string genStubClassName() override;
@@ -32,12 +30,7 @@ private:
     template <typename Rpc>
     std::string genStubGenericName(const Rpc& r);
     template <typename Rpc>
-    std::string genGenericParams(const Rpc& r);
-    template <typename Rpc>
     std::string genGenericArgs(const Rpc& r);
-
-    template <typename Rpc>
-    std::string genParamsFromJsonArray(const Rpc& r);
     template <typename Rpc>
     std::string genParamsFromJsonObject(const Rpc& r);
 };

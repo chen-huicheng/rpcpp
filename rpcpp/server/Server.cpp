@@ -18,7 +18,14 @@ void RpcServer::HandleCall(const std::string &request, std::string &response)
         params = input["params"];
     if (input.isMember("id"))
     {
-        HandleMethodCall(method, params, output);
+        try
+        {
+            HandleMethodCall(method, params, output);
+        }
+        catch (RpcException e)
+        {
+            rpcprotocol.WrapError(params, e.GetCode(), e.GetMessage(), output);
+        }
         rpcprotocol.BuildResponse(input, output, response);
     }
     else
@@ -29,7 +36,7 @@ void RpcServer::HandleCall(const std::string &request, std::string &response)
 
 bool RpcServer::StartListening()
 {
-    auto cb = std::bind(&RpcServer::HandleCall, this,_1, _2);
+    auto cb = std::bind(&RpcServer::HandleCall, this, _1, _2);
     connection.SetHandler(cb);
     return connection.StartListening();
 }
