@@ -8,9 +8,11 @@
 #include <memory>
 #include <functional>
 #include <jsoncpp/json/json.h>
-
+#include "rpcpp/common/Errors.h"
+#include "rpcpp/common/RpcException.h"
 #include "rpcpp/server/IServerConnector.h"
 #include "rpcpp/server/RpcProtocolServer.h"
+#include "rpcpp/server/connectors/LinuxTcpSocketServer.h"
 using namespace std::placeholders; 
 namespace rpcpp
 {
@@ -34,9 +36,9 @@ namespace rpcpp
 
         void HandleNotificationCall(std::string &notificationname, const Json::Value &input);
 
-        bool AddMethod(std::string &methodname, methodPointer_t pointer);
+        bool AddMethod(std::string methodname, methodPointer_t pointer);
 
-        bool AddNotification(std::string &notificationname, notificationPointer_t pointer);
+        bool AddNotification(std::string notificationname, notificationPointer_t pointer);
     private:
         IServerConnector &connection;
         RpcProtocolServer rpcprotocol;

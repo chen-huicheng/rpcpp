@@ -1,5 +1,5 @@
 
-#include "rpcpp/server/Server.h"
+#include "rpcpp/server/RpcServer.h"
 #include "rpcpp/common/Errors.h"
 using namespace rpcpp;
 
@@ -62,12 +62,13 @@ void RpcServer::HandleNotificationCall(std::string &notificationname, const Json
         notifications[notificationname](params);
 }
 
-bool RpcServer::AddMethod(std::string &methodname, methodPointer_t pointer)
+bool RpcServer::AddMethod(std::string methodname, methodPointer_t pointer)
 {
     methods[methodname] = pointer;
+    return true;
 }
 
-bool RpcServer::AddNotification(std::string &notificationname, notificationPointer_t pointer)
+bool RpcServer::AddNotification(std::string notificationname, notificationPointer_t pointer)
 {
     notifications[notificationname] = pointer;
     return false;

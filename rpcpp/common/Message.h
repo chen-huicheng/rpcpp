@@ -12,8 +12,8 @@ namespace rpcpp
     public:
         static const uint16_t MSG_MAGIC;
         static const uint16_t MSG_MAGICLEN;
-        static const int MSG_BODYLEN;
-        static const int MSG_HEADLEN;
+        static const uint32_t MSG_BODYLEN;
+        static const uint32_t MSG_HEADLEN;
 
     public:
         Message() : reader(DEFAULT_BUFFER_SIZE){};

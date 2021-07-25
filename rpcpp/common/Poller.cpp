@@ -24,10 +24,12 @@ int Poller::addfd(int fd, bool one_shot) {
 }
 int Poller::removefd(int fd) {
     epoll_ctl(epollfd, EPOLL_CTL_DEL, fd, 0);
-    close(fd);
+    return close(fd);
 }
 int Poller::wait(std::vector<epoll_event> &events,int timeout) {
     int number = epoll_wait(epollfd, events_, max_event_number, timeout);
+    if(number<0)
+        return number;
     for(int i=0;i<number;i++)
         events.push_back(events_[i]);
     return number;
@@ -37,7 +39,7 @@ int Poller::setnonblocking(int fd) {
     int old_option = fcntl(fd, F_GETFL, 0);
     int new_option = old_option | O_NONBLOCK;
     if(fcntl(fd, F_SETFL, new_option)!=0){
-        
+        return -1;
     }
     return old_option;
 }

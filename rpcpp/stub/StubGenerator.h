@@ -6,7 +6,7 @@
 #define rpcpp_STUBGENERATOR_H
 
 #include <jsoncpp/json/json.h>
-
+#include <string>
 namespace rpcpp
 {
     class StubGenerator
@@ -18,6 +18,11 @@ namespace rpcpp
         }
         virtual ~StubGenerator() = default;
 
+        static const std::string CLASSNAME;
+        static const std::string PROCEDURE;
+        static const std::string METHODNAME;
+        static const std::string PARAMS;
+        static const std::string RETURNS;
     public:
         virtual std::string genStub() = 0;
         virtual std::string genStubClassName() = 0;

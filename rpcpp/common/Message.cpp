@@ -4,8 +4,8 @@
 using namespace rpcpp;
 const uint16_t Message::MSG_MAGIC = 0x8864;
 const uint16_t Message::MSG_MAGICLEN = sizeof(uint16_t);
-const int Message::MSG_BODYLEN = sizeof(int);
-const int Message::MSG_HEADLEN = MSG_MAGICLEN + MSG_BODYLEN;
+const uint32_t Message::MSG_BODYLEN = sizeof(uint32_t);
+const uint32_t Message::MSG_HEADLEN = MSG_MAGICLEN + MSG_BODYLEN;
 
 int Message::ReadMessage(int fd, std::string &msg)
 {
@@ -18,6 +18,7 @@ int Message::ReadMessage(int fd, std::string &msg)
     {
         throw RpcException(Errors::ERROR_CLIENT_CONNECTOR, "Could not write request");
     }
+    return 0;
 }
 void Message::SendMessage(int fd, const std::string &msg)
 {
@@ -53,6 +54,8 @@ int Message::WriteHeader(int fd, int n)
     memcpy(buf, &magic, MSG_MAGICLEN);
     memcpy(buf + MSG_MAGICLEN, &len, MSG_BODYLEN);
     buf[MSG_HEADLEN] = '\0';
-    std::string target(buf);
-    writer.Write(fd, target);
+    std::string target;
+    for(int i=0;i<MSG_HEADLEN;++i)
+        target.push_back(buf[i]);
+    return writer.Write(fd, target) ? 0 : -1;
 }

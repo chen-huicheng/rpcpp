@@ -7,17 +7,20 @@
 #include <memory>
 #include <map>
 
+#include "rpcpp/common/Errors.h"
+#include "rpcpp/common/RpcException.h"
 #include "rpcpp/client/IClientConnector.h"
 #include "rpcpp/common/noncopyable.h"
 #include "rpcpp/client/RpcProtocolClient.h"
+#include "rpcpp/client/connectors/LinuxTcpSocketClient.h"
 
 namespace rpcpp
 {
-    class Client : public noncopyable
+    class RpcClient : public noncopyable
     {
     public:
-        Client(IClientConnector &connector);
-        virtual ~Client();
+        RpcClient(IClientConnector &connector);
+        virtual ~RpcClient();
 
         void CallMethod(const std::string &name, const Json::Value &parameter, Json::Value &result);
         Json::Value CallMethod(const std::string &name, const Json::Value &parameter);

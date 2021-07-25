@@ -3,6 +3,7 @@
 
 #include "rpcpp/client/IClientConnector.h"
 #include "rpcpp/common/Message.h"
+#include <string>
 namespace rpcpp
 {
     class LinuxTcpSocketClient : public IClientConnector

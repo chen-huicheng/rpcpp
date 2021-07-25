@@ -15,18 +15,23 @@ namespace
         }
     }
 }
+const std::string StubGenerator::CLASSNAME = "classname";
+const std::string StubGenerator::PROCEDURE = "rpc";
+const std::string StubGenerator::METHODNAME = "methodname";
+const std::string StubGenerator::PARAMS = "params";
+const std::string StubGenerator::RETURNS = "returns";
 
 void StubGenerator::parseProto(Json::Value &proto)
 {
     expect(proto.isObject(), "expect object");
-    expect(proto.isMember("classname"), "missing name in userclass definition");
-    expect(proto["classname"].type() == Json::stringValue, "userclass name must be string");
+    expect(proto.isMember(CLASSNAME), "missing name in userclass definition");
+    expect(proto[CLASSNAME].type() == Json::stringValue, "userclass name must be string");
 
-    serviceinfo.classname = proto["classname"].asString();
-    expect(proto["rpc"].type() == Json::arrayValue, "rpc must be array");
-    for (unsigned int i = 0; i < proto["rpc"].size(); i++)
+    serviceinfo.classname = proto[CLASSNAME].asString();
+    expect(proto[PROCEDURE].type() == Json::arrayValue, "rpc must be array");
+    for (unsigned int i = 0; i < proto[PROCEDURE].size(); i++)
     {
-        parseRpc(proto["rpc"][i]);
+        parseRpc(proto[PROCEDURE][i]);
     }
 }
 
@@ -34,22 +39,22 @@ void StubGenerator::parseRpc(Json::Value &method)
 {
     expect(method.isObject(), "method definition must be object");
 
-    expect(method.isMember("name"), "missing name in method definition");
+    expect(method.isMember(METHODNAME), "missing methodname in method definition");
 
-    expect(method["name"].isString(), "rpc name must be string");
+    expect(method[METHODNAME].isString(), "rpc methodname must be string");
 
-    std::string name = method["name"].asString();
+    std::string name = method[METHODNAME].asString();
     Json::Value params = Json::nullValue, returns = Json::nullValue;
-    if (method.isMember("params"))
+    if (method.isMember(PARAMS))
     {
-        expect(method["params"].isObject(), "params must be object");
-        params = method["params"];
+        expect(method[PARAMS].isObject(), "params must be object");
+        params = method[PARAMS];
         validateParams(params);
     }
 
-    if (method.isMember("returns"))
+    if (method.isMember(RETURNS))
     {
-        returns = method["returns"];
+        returns = method[RETURNS];
         validateReturns(returns);
     }
     if (returns.type() != Json::nullValue)

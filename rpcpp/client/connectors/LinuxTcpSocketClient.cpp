@@ -21,8 +21,11 @@ LinuxTcpSocketClient::~LinuxTcpSocketClient() {}
 void LinuxTcpSocketClient::SendRPCMessage(const std::string &message, std::string &result)
 {
     int socket_fd = Connect();
+    std::cout<<message<<std::endl;
     msg.SendMessage(socket_fd, message);
+    std::cout<<socket_fd<<std::endl;
     msg.ReadMessage(socket_fd, result);
+    std::cout<<socket_fd<<std::endl;
     close(socket_fd);
 }
 void LinuxTcpSocketClient::SendRPCMessage(const std::string &message)

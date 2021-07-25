@@ -7,11 +7,12 @@
 #include <jsoncpp/json/json.h>
 #include <memory>
 #include <utility>
+#include <iostream>
 #include <fstream>
 #include "ServiceStubGenerator.h"
 #include "ClientStubGenerator.h"
 #include "rpcpp/common/RpcException.h"
-
+using namespace std;
 using namespace rpcpp;
 
 static void usage()
@@ -40,13 +41,12 @@ static void writeToFile(StubGenerator& generator, bool outputToFile)
     fputs(stubString.c_str(), output);
 }
 
-static std::shared_ptr<StubGenerator>
-makeGenerator(bool serverSide, Json::Value& proto)
+static StubGenerator* makeGenerator(bool serverSide, Json::Value& proto)
 {
     if (serverSide)
-        return std::shared_ptr<ServiceStubGenerator>(proto);
+        return new ServiceStubGenerator(proto);
     else
-        return std::shared_ptr<ClientStubGenerator>(proto);
+        return new ClientStubGenerator(proto);
 }
 
 static void genStub(const std::string filename, bool serverSide, bool outputToFile)
@@ -56,6 +56,7 @@ static void genStub(const std::string filename, bool serverSide, bool outputToFi
     Json::Reader reader;
     Json::Value proto;
     reader.parse(input, proto);
+    // cout<<proto<<endl;
 
     try {
         auto generator = makeGenerator(serverSide, proto);
@@ -72,7 +73,7 @@ int main(int argc, char** argv)
     bool serverSide = false;
     bool clientSide = false;
     bool outputToFile = false;
-    std::string inputFileName = nullptr;
+    std::string inputFileName;
 
     int opt;
     while ((opt = getopt(argc, argv, "csi:o")) != -1) {
