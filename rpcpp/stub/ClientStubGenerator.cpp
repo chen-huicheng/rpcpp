@@ -68,7 +68,7 @@ namespace rpcpp
             [paramMembers]
 
             client.CallMethod("[procedureName]",params,result);
-            return result[returnmethod];
+            return result["ret"][returnmethod];
         }
         )";
         replaceAll(str, "[procedureName]", procedureName);
@@ -252,6 +252,7 @@ std::string ClientStubGenerator::genGenericParamMembers(const Rpc &r)
     {
         std::string one = paramMemberTemplate(key);
         result.append(one);
+        result.append("\n");
     }
     return result;
 }

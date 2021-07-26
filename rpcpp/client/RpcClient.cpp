@@ -13,7 +13,6 @@ RpcClient::~RpcClient() { }
 void RpcClient::CallMethod(const std::string &name, const Json::Value &parameter, Json::Value &result)
 {
     std::string request, response;
-    std::cout<<name<<std::endl;
     protocol.BuildRequest(name, parameter, request, false);
     connector.SendRPCMessage(request, response);
     protocol.HandleResponse(response, result);

@@ -1,6 +1,7 @@
 
 #include "rpcpp/server/RpcServer.h"
 #include "rpcpp/common/Errors.h"
+#include <iostream>
 using namespace rpcpp;
 
 RpcServer::RpcServer(IServerConnector &connector) : connection(connector)
@@ -20,6 +21,8 @@ void RpcServer::HandleCall(const std::string &request, std::string &response)
     {
         try
         {
+            std::cout<<"method:"<<method<<std::endl;
+            std::cout<<"params:"<<params<<std::endl<<std::endl;
             HandleMethodCall(method, params, output);
         }
         catch (RpcException e)

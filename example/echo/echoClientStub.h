@@ -8,7 +8,6 @@
 
 #include <jsoncpp/json/json.h>
 #include <string>
-#include <iostream>
 #include "rpcpp/common/noncopyable.h"
 #include "rpcpp/client/RpcClient.h"
 
@@ -25,9 +24,21 @@ namespace rpcpp
         {
             Json::Value params,result;
             params["message"]=message;
-            std::cout<<message<<std::endl;
+
+
             client.CallMethod("echo",params,result);
             return result["ret"].asString();
+        }
+        
+        int add(int a,int b)
+        {
+            Json::Value params,result;
+            params["a"]=a;
+params["b"]=b;
+
+
+            client.CallMethod("add",params,result);
+            return result["ret"].asInt();
         }
         
         

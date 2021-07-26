@@ -3,7 +3,6 @@
 #include <jsoncpp/json/json.h>
 #include "rpcpp/common/RpcException.h"
 #include "rpcpp/common/Errors.h"
-#include <iostream>
 #include <string>
 
 namespace rpcpp

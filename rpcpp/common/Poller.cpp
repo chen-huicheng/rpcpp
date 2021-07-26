@@ -31,7 +31,9 @@ int Poller::wait(std::vector<epoll_event> &events,int timeout) {
     if(number<0)
         return number;
     for(int i=0;i<number;i++)
+    {
         events.push_back(events_[i]);
+    }
     return number;
 }
 
@@ -42,4 +44,12 @@ int Poller::setnonblocking(int fd) {
         return -1;
     }
     return old_option;
+}
+
+int Poller::modfd(int fd, int ev)
+{
+    epoll_event event;
+    event.data.fd = fd;
+    event.events = ev | EPOLLET | EPOLLONESHOT | EPOLLRDHUP;
+    return epoll_ctl(epollfd, EPOLL_CTL_MOD, fd, &event);
 }

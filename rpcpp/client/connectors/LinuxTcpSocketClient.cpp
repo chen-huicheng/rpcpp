@@ -4,7 +4,6 @@
 #include <cstdlib>
 #include <cstring>
 #include <errno.h>
-#include <iostream>
 #include <netdb.h>
 #include <netinet/in.h>
 #include <string.h>
@@ -21,17 +20,19 @@ LinuxTcpSocketClient::~LinuxTcpSocketClient() {}
 void LinuxTcpSocketClient::SendRPCMessage(const std::string &message, std::string &result)
 {
     int socket_fd = Connect();
-    std::cout<<message<<std::endl;
-    msg.SendMessage(socket_fd, message);
-    std::cout<<socket_fd<<std::endl;
-    msg.ReadMessage(socket_fd, result);
-    std::cout<<socket_fd<<std::endl;
+    msg.init(socket_fd);
+    msg.setMsg(message);
+    msg.SendMessage();
+    msg.ReadMessage();
+    result = msg.getMsg();
     close(socket_fd);
 }
 void LinuxTcpSocketClient::SendRPCMessage(const std::string &message)
 {
     int socket_fd = Connect();
-    msg.SendMessage(socket_fd, message);
+    msg.init(socket_fd);
+    msg.setMsg(message);
+    msg.SendMessage();
     close(socket_fd);
 }
 int LinuxTcpSocketClient::Connect()

@@ -1,43 +1,59 @@
 #include "rpcpp/common/Message.h"
 #include <netdb.h>
 #include <string.h>
+#include<iostream>
 using namespace rpcpp;
 const uint16_t Message::MSG_MAGIC = 0x8864;
 const uint16_t Message::MSG_MAGICLEN = sizeof(uint16_t);
 const uint32_t Message::MSG_BODYLEN = sizeof(uint32_t);
 const uint32_t Message::MSG_HEADLEN = MSG_MAGICLEN + MSG_BODYLEN;
-
-int Message::ReadMessage(int fd, std::string &msg)
+StreamWriter Message::writer;
+StreamReader Message::reader(DEFAULT_BUFFER_SIZE);
+void Message::init(int _fd){
+    fd=_fd;
+    msg.clear();
+    len=0;
+    read=written=false;
+    firstread=true;
+}
+int Message::ReadMessage()
 {
-    int len = ReadHeader(fd);
-    if (len < 0)
+    if (!read)
     {
-        throw RpcException(Errors::ERROR_CLIENT_CONNECTOR, "RPC header error");
+        if(firstread){
+            msg.clear();
+            firstread=false;
+        }
+        // std::cout<<"ReadMessage"<<std::endl;
+        if (reader.Read(fd, msg, MSG_HEADLEN-msg.size()))
+        {
+            len=HeaderUnpack();
+            msg.clear();
+            read=true;
+        }
+        else{
+            return -1;
+        }
     }
-    if (!reader.Read(fd, msg, len))
+    if (!reader.Read(fd, msg, len-msg.size()))
     {
-        throw RpcException(Errors::ERROR_CLIENT_CONNECTOR, "Could not write request");
+        return -1;
     }
+    read=false;
+    firstread=true;
     return 0;
 }
-void Message::SendMessage(int fd, const std::string &msg)
+int Message::SendMessage()
 {
-    int rt = WriteHeader(fd, msg.size());
-    if (rt < 0)
-    {
-        throw RpcException(Errors::ERROR_CLIENT_CONNECTOR, "RPC header error");
-    }
-    if (!writer.Write(fd, msg))
-    {
-        throw RpcException(Errors::ERROR_CLIENT_CONNECTOR, "Could not write request");
-    }
+    // std::cout<<"SendMessage"<<std::endl;
+    if(!writer.Write(fd, msg))
+        return -1;
+    return 0;
 }
 
-int Message::ReadHeader(int fd)
+int Message::HeaderUnpack()
 {
-    std::string target;
-    reader.Read(fd, target, MSG_HEADLEN);
-    const char *buf = target.c_str();
+    const char *buf = msg.c_str();
     uint16_t magic = ntohs(*(uint16_t *)(buf));
     if (magic != MSG_MAGIC)
     {
@@ -46,7 +62,7 @@ int Message::ReadHeader(int fd)
     int len = ntohl(*(int *)(buf + MSG_MAGICLEN));
     return len;
 }
-int Message::WriteHeader(int fd, int n)
+int Message::HeaderPack(int n)
 {
     char buf[MSG_HEADLEN + 5];
     uint16_t magic = htons(MSG_MAGIC);
@@ -54,8 +70,6 @@ int Message::WriteHeader(int fd, int n)
     memcpy(buf, &magic, MSG_MAGICLEN);
     memcpy(buf + MSG_MAGICLEN, &len, MSG_BODYLEN);
     buf[MSG_HEADLEN] = '\0';
-    std::string target;
-    for(int i=0;i<MSG_HEADLEN;++i)
-        target.push_back(buf[i]);
-    return writer.Write(fd, target) ? 0 : -1;
+    for (int i = 0; i < static_cast<int>(MSG_HEADLEN); ++i)
+        msg.push_back(buf[i]);
 }

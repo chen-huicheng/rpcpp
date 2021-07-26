@@ -8,7 +8,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <sys/epoll.h>
-#include <map>
+#include <unordered_map>
 #include <errno.h>
 #include <iostream>
 #include <sstream>
@@ -16,7 +16,7 @@
 
 using namespace rpcpp;
 
-LinuxTcpSocketServer::LinuxTcpSocketServer(const std::string &ip, const unsigned int &port) : ip(ip), port(port), stop(false) {}
+LinuxTcpSocketServer::LinuxTcpSocketServer(const unsigned int &port, const std::string &ip) : ip(ip), port(port), stop(false) {}
 
 LinuxTcpSocketServer::~LinuxTcpSocketServer()
 {
@@ -32,16 +32,18 @@ bool LinuxTcpSocketServer::InitializeListener()
         return false;
     }
 
-    // fcntl(listenfd, F_SETFL, FNDELAY);
-    // int reuseaddr = 1;
-    // setsockopt(listenfd, SOL_SOCKET, SO_REUSEADDR, &reuseaddr,
-    //            sizeof(reuseaddr));
+    fcntl(listenfd, F_SETFL, FNDELAY);
+    int reuseaddr = 1;
+    setsockopt(listenfd, SOL_SOCKET, SO_REUSEADDR, &reuseaddr,
+               sizeof(reuseaddr));
 
     memset(&(address), 0, sizeof(address));
 
     address.sin_family = AF_INET;
-    address.sin_addr.s_addr = INADDR_ANY;
-    // inet_aton(ip.c_str(), &(address.sin_addr));
+    if(IsIpv4Address(ip)){
+        inet_aton(ip.c_str(), &(address.sin_addr));
+    }
+    else address.sin_addr.s_addr = INADDR_ANY;
     address.sin_port = htons(port);
 
     if (::bind(listenfd, (struct sockaddr *)(&(address)), sizeof(address)) != 0)
@@ -58,78 +60,76 @@ bool LinuxTcpSocketServer::InitializeListener()
 
 void LinuxTcpSocketServer::run()
 {
+    Poller poller;
+    poller.addfd(listenfd, false);
+    std::unordered_map<int, Message> request;
+    std::vector<epoll_event> events;
     while (!stop)
     {
-        struct sockaddr_in client_address;
-        socklen_t client_addrlength = sizeof(client_address);
-        int connfd = accept(listenfd, (struct sockaddr *)&client_address, &client_addrlength);
-        if (connfd < 0)
+        events.clear();
+        int number = poller.wait(events, -1);
+        if (number < 0 && errno != EINTR)
         {
-            std::cout << strerror(errno) << std::endl;
             break;
         }
-        std::string target, result;
-        if (msg.ReadMessage(connfd, target) != 0)
+        for (int i = 0; i < number; i++)
         {
-            continue;
+            int sockfd = events[i].data.fd;
+            if (sockfd == listenfd)
+            {
+                struct sockaddr_in client_address;
+                socklen_t client_addrlength = sizeof(client_address);
+                int connfd = accept(listenfd, (struct sockaddr *)&client_address, &client_addrlength);
+                if (connfd < 0)
+                {
+                    std::cout << strerror(errno) << std::endl;
+                    continue;
+                }
+                int rt = poller.addfd(connfd, true);
+                request[connfd].init(connfd);
+                if (rt < 0)
+                {
+                    poller.removefd(connfd);
+                    continue;
+                    ;
+                }
+            }
+            else if (events[i].events & (EPOLLRDHUP | EPOLLHUP | EPOLLERR))
+            {
+                poller.removefd(sockfd);
+            }
+            else if (events[i].events & EPOLLIN)
+            {
+                if (request[sockfd].ReadMessage() != 0)
+                {
+                    if (errno == EAGAIN || errno == EWOULDBLOCK)
+                        continue;
+                    poller.removefd(sockfd);
+                    continue;
+                }
+                std::string target, result;
+                target = request[sockfd].getMsg();
+                ProcessRequest(target, result);
+                request[sockfd].setMsg(result);
+                poller.modfd(sockfd, EPOLLOUT);
+            }
+            else if (events[i].events & EPOLLOUT)
+            {
+                if (request[sockfd].SendMessage() != 0)
+                {
+                    if (errno == EAGAIN || errno == EWOULDBLOCK)
+                        continue;
+                    poller.removefd(sockfd);
+                    continue;
+                }
+                // poller.removefd(sockfd);
+            }
+            else
+            {
+                poller.removefd(sockfd);
+            }
         }
-        ProcessRequest(target, result);
-        msg.SendMessage(connfd, result);
     }
-    // Poller poller;
-    // poller.addfd(listenfd, false);
-    // // std::map<int, std::string> request;
-    // std::vector<epoll_event> events;
-    // while (!stop)
-    // {
-    //     int number = poller.wait(events, -1);
-    //     if (number < 0 && errno != EINTR)
-    //     {
-    //         break;
-    //     }
-    //     for (int i = 0; i < number; i++)
-    //     {
-    //         int sockfd = events[i].data.fd;
-    //         std::cout<<sockfd<<std::endl;
-    //         if (sockfd == listenfd)
-    //         {
-    //             struct sockaddr_in client_address;
-    //             socklen_t client_addrlength = sizeof(client_address);
-    //             int connfd = accept(listenfd, (struct sockaddr *)&client_address, &client_addrlength);
-    //             if (connfd < 0)
-    //             {
-    //                 std::cout<<strerror(errno)<<std::endl;
-    //                 break;
-    //             }
-    //             int rt = poller.addfd(connfd, true);
-    //             if (rt < 0)
-    //             {
-    //                 break;
-    //             }
-    //         }
-    //         else if (events[i].events & (EPOLLRDHUP | EPOLLHUP | EPOLLERR))
-    //         {
-    //             //如有异常 关闭客户端链接
-    //             poller.removefd(sockfd);
-    //         }
-    //         else if (events[i].events & EPOLLIN)
-    //         {
-    //             std::string target, result;
-    //             if (msg.ReadMessage(sockfd, target) != 0)
-    //             {
-    //                 poller.removefd(sockfd);
-    //                 continue;
-    //             }
-    //             ProcessRequest(target, result);
-    //             msg.SendMessage(sockfd, result);
-    //         }
-    //         else
-    //         {
-    //             std::cout<<"removefd"<<sockfd<<std::endl;
-    //             poller.removefd(sockfd);
-    //         }
-    //     }
-    // }
 }
 void *LinuxTcpSocketServer::eventloop(void *arg)
 {
@@ -139,7 +139,7 @@ void *LinuxTcpSocketServer::eventloop(void *arg)
 }
 bool LinuxTcpSocketServer::StartListening()
 {
-    if(!InitializeListener())
+    if (!InitializeListener())
         return false;
     run();
     pthread_t pid;
@@ -157,4 +157,10 @@ bool LinuxTcpSocketServer::StopListening()
 {
     stop = true;
     return true;
+}
+
+bool LinuxTcpSocketServer::IsIpv4Address(const std::string &ip)
+{
+    struct in_addr addr;
+    return (inet_aton(ip.c_str(), &addr) != 0);
 }

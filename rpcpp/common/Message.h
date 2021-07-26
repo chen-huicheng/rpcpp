@@ -16,16 +16,30 @@ namespace rpcpp
         static const uint32_t MSG_HEADLEN;
 
     public:
-        Message() : reader(DEFAULT_BUFFER_SIZE){};
+        Message():read(false),written(false),firstread(true){};
         ~Message(){};
-        int ReadMessage(int fd, std::string &msg);
-        void SendMessage(int fd, const std::string &msg);
-        int ReadHeader(int fd);
-        int WriteHeader(int fd, int len);
-
+        void init(int _fd);
+        int ReadMessage();
+        int SendMessage();
+        std::string getMsg(){
+            std::string tmp=msg;
+            return tmp;
+        }
+        void setMsg(const std::string &_msg){
+            msg.clear();
+            HeaderPack(_msg.size());
+            msg.append(_msg);
+            len=msg.size();
+        }
     private:
-        StreamWriter writer;
-        StreamReader reader;
+        int fd;
+        bool read,written,firstread;
+        std::string msg;
+        int len;
+        int HeaderUnpack();
+        int HeaderPack(int n);
+        static StreamWriter writer;
+        static StreamReader reader;
     };
 
 }

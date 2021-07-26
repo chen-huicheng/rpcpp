@@ -22,7 +22,7 @@ namespace rpcpp
         int addfd(int fd, bool one_shot);
         int removefd(int fd);
         int wait(std::vector<epoll_event> &events, int timeout);
-
+        int modfd(int fd, int ev);
     private:
         int setnonblocking(int fd);
     };

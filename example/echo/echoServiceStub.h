@@ -24,18 +24,29 @@ namespace rpcpp
             server.AddMethod("echo",std::bind(&echoServiceStub::echoStub, this, _1, _2));
                 
 
+            server.AddMethod("add",std::bind(&echoServiceStub::addStub, this, _1, _2));
+                
+
         }
         ~echoServiceStub() = default;
     private:
         
         void echoStub(const Json::Value& request, Json::Value &response)
-        {
-            std::cout<<request<<std::endl;
-            // auto& params = request["params"];
-                
+        {    
             auto message = request["message"].asString();
 
             auto result = convert().echo(message);
+            response["ret"]=result;
+                
+        }
+        
+
+        void addStub(const Json::Value& request, Json::Value &response)
+        {    
+            auto a = request["a"].asInt();
+auto b = request["b"].asInt();
+
+            auto result = convert().add(a,b);
             response["ret"]=result;
                 
         }

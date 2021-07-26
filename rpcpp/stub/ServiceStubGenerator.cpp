@@ -103,10 +103,8 @@ namespace rpcpp
     {
         std::string str =
             R"(
-        void [stubProcedureName](Json::Value& request, Json::Value &response)
-        {
-            auto& params = request["params"];
-                
+        void [stubProcedureName](const Json::Value& request, Json::Value &response)
+        {    
             [paramsFromJsonObject]
             auto result = convert().[procedureName]([procedureArgs]);
             response["ret"]=result;
@@ -128,9 +126,9 @@ namespace rpcpp
     {
         std::string str =
             R"(
-        void [stubNotifyName](Json::Value& request)
+        void [stubNotifyName](const Json::Value& request)
         {
-           auto& params = request["params"];
+           //auto& params = request["params"];
                 
             [paramsFromJsonObject]
             auto result = convert().[notifyName]([notifyArgs]);
@@ -149,7 +147,7 @@ namespace rpcpp
         const std::string &index,
         Json::ValueType type)
     {
-        std::string str = R"(auto [arg] = params[[index]][method];)";
+        std::string str = R"(auto [arg] = request[[index]][method];)";
         std::string method = [=]()
         {
             //               nullValue = 0, ///< 'null' value

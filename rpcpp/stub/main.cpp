@@ -56,7 +56,6 @@ static void genStub(const std::string filename, bool serverSide, bool outputToFi
     Json::Reader reader;
     Json::Value proto;
     reader.parse(input, proto);
-    // cout<<proto<<endl;
 
     try {
         auto generator = makeGenerator(serverSide, proto);

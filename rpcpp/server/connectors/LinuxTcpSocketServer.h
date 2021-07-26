@@ -23,7 +23,7 @@ namespace rpcpp
     class LinuxTcpSocketServer : public IServerConnector
     {
     public:
-        LinuxTcpSocketServer(const std::string &ip, const unsigned int &port);
+        LinuxTcpSocketServer(const unsigned int &port,const std::string &ip="");
         virtual ~LinuxTcpSocketServer();
         virtual bool StartListening();
         virtual bool StopListening();
@@ -37,6 +37,7 @@ namespace rpcpp
         bool InitializeListener();
         void run();
         static void* eventloop(void *arg);
+        bool IsIpv4Address(const std::string &ip);
     };
 
 }

@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <algorithm>
-#include <iostream>
 
 using namespace rpcpp;
 
@@ -17,7 +16,7 @@ bool StreamReader::Read(int fd, std::string &target, size_t len)
     do
     {
         bytesRead = read(fd, buffer, std::min(len, buffersize));
-        if (bytesRead < 0)
+        if (bytesRead <= 0)
         {
             return false;
         }

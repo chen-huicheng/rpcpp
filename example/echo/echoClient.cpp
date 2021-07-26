@@ -16,5 +16,6 @@ int main()
     LinuxTcpSocketClient connect(hostname,port);
     echoClientStub echoclient(connect);
     std::cout<<echoclient.echo("hello")<<std::endl;
+    std::cout<<echoclient.add(3,4)<<std::endl;
     
 }

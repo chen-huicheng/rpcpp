@@ -7,6 +7,14 @@
                 "message": "string"
             },
             "returns":"string"
+        },
+        {
+            "methodname": "add",
+            "params": {
+                "a": 1,
+                "b": 2
+            },
+            "returns":3
         }
     ]
 }
