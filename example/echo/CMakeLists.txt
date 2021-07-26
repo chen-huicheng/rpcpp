@@ -1,7 +1,7 @@
-add_executable(echo_server_ echoService.cpp echoServiceStub.h)
-target_link_libraries(echo_server_ rpcpp)
-install(TARGETS echo_server_ DESTINATION bin)
+add_executable(echoService echoService.cpp echoServiceStub.h)
+target_link_libraries(echoService rpcpp)
+install(TARGETS echoService DESTINATION bin)
 
-add_executable(echo_client_ echoClient.cpp echoClientStub.h)
-target_link_libraries(echo_client_ rpcpp)
-install(TARGETS echo_client_ DESTINATION bin)
+add_executable(echoClient echoClient.cpp echoClientStub.h)
+target_link_libraries(echoClient rpcpp)
+install(TARGETS echoClient DESTINATION bin)
